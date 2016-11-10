@@ -11,6 +11,9 @@ public class Player : GridObject {
 	void Update(){
 		InputTeclado ();
         transform.position = Vector3.MoveTowards(transform.position, targetPOS, speed * Time.deltaTime);
+		if (transform.position == targetPOS) {
+			forceIdleAnim ();
+		}
 	}
 
 	public void criaEscada(Direction direcao) {
@@ -51,18 +54,22 @@ public class Player : GridObject {
 		if(Input.GetKeyDown("f")){
 			criaEscada (Direction.RIGHT_UP);
             move(Direction.RIGHT_UP);
+			playerAnimation (Direction.RIGHT_UP,false);
 		}
 		if (Input.GetKeyDown ("c")) {
 			criaEscada (Direction.RIGHT_DOWN);
 			move (Direction.RIGHT_DOWN);
+			playerAnimation (Direction.RIGHT_DOWN,false);
 		}
 		if (Input.GetKeyDown ("s")) {
 			criaEscada (Direction.LEFT_UP);
 			move (Direction.LEFT_UP);
+			playerAnimation (Direction.LEFT_UP,false);
 		}
 		if (Input.GetKeyDown ("x")) {
 			criaEscada (Direction.LEFT_DOWN);
 			move (Direction.LEFT_DOWN);
+			playerAnimation (Direction.LEFT_DOWN,false);
 		}
 	}
 
@@ -109,6 +116,34 @@ public class Player : GridObject {
 			return true;
 		}	
 		return false;
+	}
+
+	void playerAnimation(Direction direcao, bool criandoEscada){
+		//statement pra nao dar aviso
+		criandoEscada = true;
+		
+		transform.gameObject.GetComponent<Animator> ().SetBool ("playerRight", false);
+		transform.gameObject.GetComponent<Animator> ().SetBool ("playerLeft", false);
+
+		switch (direcao) {
+		case Direction.RIGHT_UP:
+			transform.gameObject.GetComponent<Animator> ().SetBool ("playerRight", true);
+			break;
+		case Direction.RIGHT_DOWN:
+			transform.gameObject.GetComponent<Animator> ().SetBool ("playerRight", true);
+			break;
+		case Direction.LEFT_UP:
+			transform.gameObject.GetComponent<Animator> ().SetBool ("playerLeft", true);
+			break;
+		case Direction.LEFT_DOWN:
+			transform.gameObject.GetComponent<Animator> ().SetBool ("playerLeft", true);
+			break;
+		}
+	}
+
+	void forceIdleAnim(){
+		transform.gameObject.GetComponent<Animator> ().SetBool ("playerRight", false);
+		transform.gameObject.GetComponent<Animator> ().SetBool ("playerLeft", false);
 	}
 	
 		
