@@ -14,17 +14,34 @@ public class Player : GridObject {
 	}
 
 	public void criaEscada(Direction direcao) {
+		GameObject.Find ("ScoreManager").GetComponent<ScoreText> ().addOnStair ();
 		switch (direcao) {
 		case Direction.RIGHT_UP:
+			if (existeEscada (Direction.RIGHT_UP)) {
+				//Debug.Log ("AconteceuRU");
+				return;
+			}
 			if(transform.position.x < 4 && transform.position == targetPOS) Instantiate(ladderA,transform.position + new Vector3(1,0,0), Quaternion.identity);
 			break;
 		case Direction.RIGHT_DOWN:
+			if (existeEscada (Direction.RIGHT_DOWN)) {
+				//Debug.Log ("AconteceuRD");
+				return;
+			}
 			if(transform.position.x < 4 && transform.position == targetPOS) Instantiate(ladderB,transform.position - new Vector3(-1,2,0), Quaternion.identity);
 			break;
 		case Direction.LEFT_UP:
+			if (existeEscada (Direction.LEFT_UP)) {
+				//Debug.Log ("AconteceuLU");
+				return;
+			}
 			if(transform.position.x > -4 && transform.position == targetPOS) Instantiate(ladderB,transform.position - new Vector3(1,0,0), Quaternion.identity);
 			break;
 		case Direction.LEFT_DOWN:
+			if (existeEscada (Direction.LEFT_DOWN)) {
+				//Debug.Log ("AconteceuLD");
+				return;
+			}
 			if(transform.position.x > -4 && transform.position == targetPOS) Instantiate(ladderA,transform.position - new Vector3(1,2,0), Quaternion.identity);
 			break;
 		}
@@ -66,4 +83,33 @@ public class Player : GridObject {
         SceneManager.LoadScene("GameOver");
         //Destroy(this.gameObject);
     }
+
+	bool existeEscada(Direction direcao){
+		RaycastHit2D hit;
+		Vector3 alvo = new Vector3(0,0,0);
+
+		switch (direcao) {
+		case Direction.RIGHT_UP:
+			alvo = new Vector3 (1, 1, 0);
+			break;
+		case Direction.RIGHT_DOWN:
+			alvo = new Vector3 (1, -1, 0);
+			break;
+		case Direction.LEFT_UP:
+			alvo = new Vector3 (-1, 1, 0);
+			break;
+		case Direction.LEFT_DOWN:
+			alvo = new Vector3 (-1, -1, 0);
+			break;
+		}
+		//Debug.DrawRay (transform.position - new Vector3(0,1,0),alvo,Color.blue,2f);
+		hit = Physics2D.Raycast (transform.position - new Vector3(0,1,0), alvo, 1f,1<<LayerMask.NameToLayer("Escada"));
+		if (hit.collider != null) {
+			//Debug.Log (hit.collider);
+			return true;
+		}	
+		return false;
+	}
+	
+		
 }
