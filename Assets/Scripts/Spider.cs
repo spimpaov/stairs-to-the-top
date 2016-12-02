@@ -70,4 +70,14 @@ public class Spider : GridObject {
         */
         return possibleDirections[Random.Range(0, possibleDirections.Count)];
     }
+
+    void OnTriggerEnter2D(Collider2D target)
+    {
+        if(target.gameObject.tag == "Saw") { Debug.Log("AAAAA"); destroySpider(); }
+    }
+
+    void destroySpider()
+    {
+        Destroy(this.gameObject);
+    }
 }
