@@ -49,6 +49,7 @@ public class Player : GridObject {
 			break;
 		}
 	}
+
 	public void InputTeclado(){
 		
 		if(Input.GetKeyDown("f")){
