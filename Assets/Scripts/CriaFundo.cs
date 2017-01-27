@@ -3,29 +3,30 @@ using System.Collections;
 
 public class CriaFundo : MonoBehaviour {
 
-	public GameObject fundoMadeira,
-					  fundoPontilhado,
-					  maincamera;
+	public GameObject chaoMadeira,
+					  fundoMadeira,
+					  maincamera,
+                      chaoInicial;
+    private float alturaUltimoBloco, alturaCamera;
+    private float tamanhoFundo;
 
-	private int i = 0,//Contador para instanciaFundo (Madeira)
-				j = 0;//Contador para instanciaPontilhado (Pontilhado)
+    private void Start()
+    {
+        tamanhoFundo = fundoMadeira.gameObject.GetComponent<SpriteRenderer>().sprite.bounds.size.y*1.48f;
+        alturaUltimoBloco = chaoInicial.transform.position.y;
+    }
 
 	void Update () {
-		instanciaFundoMadeira ();
-		instanciaFundoPontilhado ();
-	}
-		
-	private void instanciaFundoMadeira(){
-		if (maincamera.transform.position.y + 8 >= 10*i) {
-			Instantiate (fundoMadeira, new Vector3 (0, 10f*i + 8f, 0), Quaternion.identity);
-			i++;
-		}
-	}
+        alturaCamera = maincamera.gameObject.GetComponent<Camera>().orthographicSize + maincamera.transform.position.y;
+        GeraFundo();
+    }
 
-	private void instanciaFundoPontilhado(){
-		if (maincamera.transform.position.y + 8 >= 10*j) {
-			Instantiate (fundoPontilhado, new Vector3 (0, 20f*j - 3f, 0), Quaternion.identity);
-			j++;
-		}
-	}
+    private void GeraFundo() {
+        int randNumber = Random.Range(0, 10);
+        if (alturaCamera >= alturaUltimoBloco) {
+            GameObject temp = Instantiate(fundoMadeira, new Vector3(0, alturaUltimoBloco + tamanhoFundo, 0), Quaternion.identity);
+            temp.GetComponent<Animator>().SetInteger("porcentagem",randNumber);
+            alturaUltimoBloco = alturaUltimoBloco + tamanhoFundo;
+        }
+    }
 }

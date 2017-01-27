@@ -6,8 +6,9 @@ public class Player : GridObject {
 
 	public Transform target;
     public Transform ladderA;
-	public Transform ladderB;
+    public Transform ladderB;
 
+   
 	void Update(){
 		InputTeclado ();
         transform.position = Vector3.MoveTowards(transform.position, targetPOS, speed * Time.deltaTime);
