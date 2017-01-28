@@ -7,14 +7,18 @@ public class Player : GridObject {
 	public Transform target;
     public Transform ladderA;
     public Transform ladderB;
-
+	public bool martelo = false, boia = false;
+	private Vector3 vetorDirecaoAtual = new Vector3(0,0,0);
    
 	void Update(){
 		InputTeclado ();
         transform.position = Vector3.MoveTowards(transform.position, targetPOS, speed * Time.deltaTime);
+		vetorDirecaoAtual = targetPOS - transform.position;
+		playerAnimation ();
 		if (transform.position == targetPOS) {
 			forceIdleAnim ();
 		}
+		Debug.Log (vetorDirecaoAtual);
 	}
 
 	public void criaEscada(Direction direcao) {
@@ -56,22 +60,18 @@ public class Player : GridObject {
 		if(Input.GetKeyDown("f")){
 			criaEscada (Direction.RIGHT_UP);
             move(Direction.RIGHT_UP);
-			playerAnimation (Direction.RIGHT_UP,false);
 		}
 		if (Input.GetKeyDown ("c")) {
 			criaEscada (Direction.RIGHT_DOWN);
 			move (Direction.RIGHT_DOWN);
-			playerAnimation (Direction.RIGHT_DOWN,false);
 		}
 		if (Input.GetKeyDown ("s")) {
 			criaEscada (Direction.LEFT_UP);
 			move (Direction.LEFT_UP);
-			playerAnimation (Direction.LEFT_UP,false);
 		}
 		if (Input.GetKeyDown ("x")) {
 			criaEscada (Direction.LEFT_DOWN);
 			move (Direction.LEFT_DOWN);
-			playerAnimation (Direction.LEFT_DOWN,false);
 		}
 	}
 
@@ -111,7 +111,7 @@ public class Player : GridObject {
 			alvo = new Vector3 (-1, -1, 0);
 			break;
 		}
-		//Debug.DrawRay (transform.position - new Vector3(0,1,0),alvo,Color.blue,2f);
+		Debug.DrawRay (transform.position - new Vector3(0,1,0),alvo,Color.blue,2f);
 		hit = Physics2D.Raycast (transform.position - new Vector3(0,1,0), alvo, 1f,1<<LayerMask.NameToLayer("Escada"));
 		if (hit.collider != null) {
 			//Debug.Log (hit.collider);
@@ -120,33 +120,22 @@ public class Player : GridObject {
 		return false;
 	}
 
-	void playerAnimation(Direction direcao, bool criandoEscada){
-		//statement pra nao dar aviso
-		criandoEscada = true;
-		
-		transform.gameObject.GetComponent<Animator> ().SetBool ("playerRight", false);
-		transform.gameObject.GetComponent<Animator> ().SetBool ("playerLeft", false);
-
-		switch (direcao) {
-		case Direction.RIGHT_UP:
-			transform.gameObject.GetComponent<Animator> ().SetBool ("playerRight", true);
-			break;
-		case Direction.RIGHT_DOWN:
-			transform.gameObject.GetComponent<Animator> ().SetBool ("playerRight", true);
-			break;
-		case Direction.LEFT_UP:
-			transform.gameObject.GetComponent<Animator> ().SetBool ("playerLeft", true);
-			break;
-		case Direction.LEFT_DOWN:
-			transform.gameObject.GetComponent<Animator> ().SetBool ("playerLeft", true);
-			break;
+	void playerAnimation(){
+		if (vetorDirecaoAtual.x < 0) {
+			forceIdleAnim ();
+			this.gameObject.GetComponent<Animator> ().SetBool ("move",true);
+			this.gameObject.GetComponent<Animator> ().SetBool ("right",false);
+		}else if (vetorDirecaoAtual.x > 0) {
+			forceIdleAnim ();
+			this.gameObject.GetComponent<Animator> ().SetBool ("move",true);
+			this.gameObject.GetComponent<Animator> ().SetBool ("right",true);
+		}else if(vetorDirecaoAtual.magnitude == 0){
+			forceIdleAnim ();
 		}
 	}
 
 	void forceIdleAnim(){
-		transform.gameObject.GetComponent<Animator> ().SetBool ("playerRight", false);
-		transform.gameObject.GetComponent<Animator> ().SetBool ("playerLeft", false);
-	}
-	
+		transform.gameObject.GetComponent<Animator> ().SetBool ("move", false);
+	}	
 		
 }
