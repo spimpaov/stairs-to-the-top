@@ -18,7 +18,6 @@ public class Player : GridObject {
 		if (transform.position == targetPOS) {
 			forceIdleAnim ();
 		}
-		Debug.Log (vetorDirecaoAtual);
 	}
 
 	public void criaEscada(Direction direcao) {
