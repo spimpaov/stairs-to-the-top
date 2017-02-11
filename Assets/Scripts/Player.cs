@@ -8,16 +8,25 @@ public class Player : GridObject {
     public Transform ladderA;
     public Transform ladderB;
 	public bool martelo = false, boia = false;
-	private Vector3 vetorDirecaoAtual = new Vector3(0,0,0);
-   
-	void Update(){
-		InputTeclado ();
+    public float timeMartelo = 10f;
+    public float timeLeftMartelo;
+    
+    private Vector3 vetorDirecaoAtual = new Vector3(0,0,0);
+
+    private void Start()
+    {
+        timeLeftMartelo = timeMartelo;
+    }
+
+    void Update(){
+        InputTeclado();
         transform.position = Vector3.MoveTowards(transform.position, targetPOS, speed * Time.deltaTime);
 		vetorDirecaoAtual = targetPOS - transform.position;
 		playerAnimation ();
 		if (transform.position == targetPOS) {
 			forceIdleAnim ();
 		}
+        hasHammer();
 	}
 
 	public void criaEscada(Direction direcao) {
@@ -80,9 +89,22 @@ public class Player : GridObject {
         {
             target.GetComponent<Coin>().destroyCoin();
         }
-        if (target.gameObject.tag == "Saw" || target.gameObject.tag == "Water"|| target.gameObject.tag == "Spider")
+
+        if (target.gameObject.tag == "Saw")
         {
-            destroyPlayer();
+            if (martelo) target.GetComponent<Saw>().destroySaw();
+            else destroyPlayer();
+        }
+
+        if (target.gameObject.tag == "Water")
+        {
+            if (boia) { ; }
+            else destroyPlayer();
+        }
+        if (target.gameObject.tag == "Spider")
+        {
+            if (martelo) target.GetComponent<Spider>().destroySpider();
+            else destroyPlayer();
         }
     }
 
@@ -137,4 +159,14 @@ public class Player : GridObject {
 		transform.gameObject.GetComponent<Animator> ().SetBool ("move", false);
 	}	
 		
+    void hasHammer()
+    {
+        if(martelo)
+        {
+            timeLeftMartelo -= Time.deltaTime; //-1 por segundo e nao por frame
+            if (timeLeftMartelo < 0) {
+                martelo = false; timeLeftMartelo = timeMartelo;
+            }
+        }
+    }
 }

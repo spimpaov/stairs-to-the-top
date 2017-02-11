@@ -43,40 +43,15 @@ public class Spider : GridObject {
             possibleDirections.Add(Direction.RIGHT_UP);
             possibleDirections.Add(Direction.LEFT_UP);
         }
-        
-        /*
-        possibleDirections.Add(Direction.RIGHT_DOWN);
-        possibleDirections.Add(Direction.LEFT_DOWN);
-        possibleDirections.Add(Direction.RIGHT_UP);
-        possibleDirections.Add(Direction.LEFT_UP);
-
-        if (player.transform.position.y < this.transform.position.y)
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                possibleDirections.Add(Direction.LEFT_DOWN);
-                possibleDirections.Add(Direction.RIGHT_DOWN);
-            }
-        }
-        //player above spider
-        else
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                possibleDirections.Add(Direction.RIGHT_UP);
-                possibleDirections.Add(Direction.LEFT_UP);
-            }
-        }
-        */
         return possibleDirections[Random.Range(0, possibleDirections.Count)];
     }
 
     void OnTriggerEnter2D(Collider2D target)
     {
-        if(target.gameObject.tag == "Saw") { Debug.Log("AAAAA"); destroySpider(); }
+        if(target.gameObject.tag == "Saw") { destroySpider(); }
     }
 
-    void destroySpider()
+    public void destroySpider()
     {
         Destroy(this.gameObject);
     }

@@ -58,9 +58,13 @@ public class Spawner : MonoBehaviour {
             spawnable = 2;
         }
         else if (item == Spawnable.SPIDER) {
-            Instantiate(spider, position, Quaternion.identity);
-            spawnable = 3;
+            if (linhaSpawnItem != 0 && linhaSpawnItem != 1 && Linhas[linhaSpawnItem - 2] != 4)
+            {
+                Instantiate(spider, position, Quaternion.identity);
+                spawnable = 3;
+            }
         }
+        
         else if (item == Spawnable.SAW) { 
             if (linhaSpawnItem != 0 && linhaSpawnItem != 1 && Linhas[linhaSpawnItem - 2] != 4) {
                 Instantiate(saw, position, Quaternion.identity);
