@@ -7,13 +7,12 @@ public class ScoreText : MonoBehaviour {
 	public Text text;
 	public int score = 0, pontuacaoEscada = 10;
 	public float tempo = 0.0f;
-    public bool inGame;    
+    public bool inGame;
 
-	void Update() {
+    void Update() {
 		showScore ();
         if (inGame) {
             addEachSecond();
-            if (score > PlayerPrefs.GetInt("Highscore")) { PlayerPrefs.SetInt("Highscore", score); }
         }
 	}
 
@@ -27,9 +26,15 @@ public class ScoreText : MonoBehaviour {
 		if (tempo >= 1) {
 			tempo = 0;
 			score++;
-            PlayerPrefs.SetInt("Score", score);
         }
     }
+
+    public void setHighscore()
+    {
+        PlayerPrefs.SetInt("Score", score);
+        if (score > PlayerPrefs.GetInt("Highscore")) { PlayerPrefs.SetInt("Highscore", score); }
+    }
+
 	public void addOnStair() {
 		score += pontuacaoEscada;
 	}

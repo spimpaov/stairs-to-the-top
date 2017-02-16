@@ -10,14 +10,14 @@ public class PowerUp : MonoBehaviour {
     public int relacaoScoreToPowerUpText = 500;
 
     private bool spottedXY = false, spotted_XY = false, spottedX_Y = false, spotted_X_Y = false;
-    private GameObject HUD;
-    private GameObject score;
+    //private GameObject HUD;
+    //private GameObject score;
     private GameObject player;
 
     void Start()
     {
-        HUD = GameObject.FindGameObjectWithTag("HUD");
-        score = GameObject.FindGameObjectWithTag("Score");
+        //HUD = GameObject.FindGameObjectWithTag("HUD");
+        //score = GameObject.FindGameObjectWithTag("Score");
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
@@ -49,11 +49,12 @@ public class PowerUp : MonoBehaviour {
     {
         if(spottedXY && spottedX_Y && spotted_XY && spotted_X_Y)
         {
+            /*
             GameObject temp = Instantiate(powerUpColetado.gameObject);
             temp.transform.localPosition = new Vector3(0, score.transform.position.y- relacaoScoreToPowerUpText, 0);
             temp.transform.SetParent(HUD.transform, false);
-            player.GetComponent<Player>().martelo = true;
-            player.GetComponent<Player>().timeLeftMartelo = player.GetComponent<Player>().timeMartelo;
+            */
+            player.GetComponent<Player>().setHammer();
             destroyPowerUp();
         }
     }

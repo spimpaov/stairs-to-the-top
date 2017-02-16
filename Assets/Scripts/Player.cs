@@ -12,10 +12,12 @@ public class Player : GridObject {
     public float timeLeftMartelo;
     
     private Vector3 vetorDirecaoAtual = new Vector3(0,0,0);
+    private GameObject scoreText;
 
     private void Start()
     {
         timeLeftMartelo = timeMartelo;
+        scoreText = GameObject.FindGameObjectWithTag("ScoreText");
     }
 
     void Update(){
@@ -101,6 +103,7 @@ public class Player : GridObject {
             if (boia) { ; }
             else destroyPlayer();
         }
+
         if (target.gameObject.tag == "Spider")
         {
             if (martelo) target.GetComponent<Spider>().destroySpider();
@@ -110,6 +113,7 @@ public class Player : GridObject {
 
     void destroyPlayer()
     {
+        scoreText.GetComponent<ScoreText>().setHighscore();
         SceneManager.LoadScene("GameOver");
         //Destroy(this.gameObject);
     }
@@ -158,7 +162,13 @@ public class Player : GridObject {
 	void forceIdleAnim(){
 		transform.gameObject.GetComponent<Animator> ().SetBool ("move", false);
 	}	
-		
+
+    public void setHammer()
+    {
+        martelo = true;
+        timeLeftMartelo = timeMartelo;
+    }
+ 		
     void hasHammer()
     {
         if(martelo)
