@@ -9,8 +9,9 @@ public class Agua : MonoBehaviour {
     public float minSpeed_End;
     public float MaximumDistance;
     public float MinimumDistance;
-    public float waterSpeed;
     public float timeNextMinSpeed;
+
+    private float waterSpeed;
 
     private float timeLeftMinSpeed;
 	
