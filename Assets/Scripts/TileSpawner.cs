@@ -11,10 +11,7 @@ public class TileSpawner : MonoBehaviour
 
     void Start()
     {       
-
         StartCoroutine(spawn());
-        
-        
     }
 
     IEnumerator spawn()
@@ -22,7 +19,7 @@ public class TileSpawner : MonoBehaviour
         while (true)
         {
             TileData randomTile = tiles[Random.Range(0, tiles.Count)];
-           // Debug.Log("tile escolhido: " + randomTile);
+            //Debug.Log("tile escolhido: " + randomTile);
             aux.generate(randomTile);
             yield return new WaitForSeconds(timeToNextSpawn);
         }
