@@ -8,7 +8,7 @@ public class GenericPrefab : MonoBehaviour {
     public Saw saw;
     public Spider spider;
 
-	private GameObject genericObj;
+    private GameObject genericObj;
     private int capacidadeTile;
     private Vector3 pos;
     private float alturaTile;
@@ -19,7 +19,6 @@ public class GenericPrefab : MonoBehaviour {
         iterationTile = 0;
     }
 
-	static int currentTile = 0;
 
     //identifica quais sao os objetos no tile e spawna cada um
     public void generate(TileData tile)
@@ -30,20 +29,13 @@ public class GenericPrefab : MonoBehaviour {
 
         capacidadeTile = tile.matriz.Capacity;
         alturaTile = (float) capacidadeTile * 2;
-
-		genericObj = new GameObject();
-		genericObj.name = "Tile " + currentTile++;
-		genericObj.transform.position = new Vector3 (0, calculaAlturaRelativaTile(), 0);
-		iterationTile++;
-
         foreach (TileData.linha linha in tile.matriz) {
             int pos_linha = tile.matriz.IndexOf(linha);
-			//Debug.Log("pos_linha: " + pos_linha);
+            Debug.Log("pos_linha: " + pos_linha);
 
-			for (int i = 0; i < linha.line.Count; i++) {
-                int pos_coluna = i;
-				SpawnableObject so = linha.line [pos_coluna];
-                //Debug.Log("* pos_coluna: " + pos_coluna);
+            foreach (SpawnableObject so in linha.line) {
+                int pos_coluna = linha.line.IndexOf(so);
+                Debug.Log("   --> pos_coluna: " + pos_coluna); //ERRO: ele sempre pega a mesma coluna (pos_coluna = 0) por que?????
 
                 switch (so) {
                     case SpawnableObject.NADA:
@@ -63,6 +55,8 @@ public class GenericPrefab : MonoBehaviour {
                 }
             }
         }
+        iterationTile++;
+
     }
 
     //calcular a posição do objeto na grid de acordo com a posição dele dentro do tile 
@@ -72,8 +66,9 @@ public class GenericPrefab : MonoBehaviour {
     private Vector3 calculaPos(int pos_linha, int pos_coluna)
     {
         float y;
-        float x =-10;
-        if (pos_linha%2 == 0) { //impar -> linha[3]
+        float x = 0;
+        if (pos_linha%2 == 1) { //impar -> linha[3]
+
             switch (pos_coluna)
             {
                 case 0:
@@ -86,6 +81,7 @@ public class GenericPrefab : MonoBehaviour {
                     x = +4;
                     break;
             }
+
         }
         else { //par -> linha[2]
             switch (pos_coluna)
@@ -98,40 +94,40 @@ public class GenericPrefab : MonoBehaviour {
                     break;
             }
         }
-        y = (capacidadeTile - pos_linha ) * 2;
-        return new Vector3(x, y, 0);
+
+        y = (capacidadeTile - pos_linha -1) * 2;
+        //Debug.Log(x + " , " + y);
+        return new Vector3(x, y + calculaAlturaRelativaTile(), 0);
+
     }
 
     private float calculaAlturaRelativaTile()
     {
+        //caso use altura do player pra triggerar o spawn de um tile: (melhorar)
+        //float alturaPlayer = player.transform.position.y;
+        //return alturaPlayer + alturaTile;
+
+        //caso use tempo:
         float temp = alturaTile * iterationTile;
         return temp;
+
     }
+
+
+
 
     private void instantiateCoin(Vector3 pos)
     {
-		GameObject childObj = Instantiate (coin.gameObject);
-		childObj.transform.parent = genericObj.transform;
-		childObj.transform.localPosition = pos;
-
-        //Instantiate(coin, pos, Quaternion.identity);
+        Instantiate(coin, pos, Quaternion.identity);
     }
 
     private void instantiateSpider(Vector3 pos)
     {
-		GameObject childObj = Instantiate (spider.gameObject);
-		childObj.transform.parent = genericObj.transform;
-		childObj.transform.localPosition = pos;
-
-        //Instantiate(spider, pos, Quaternion.identity);
+        Instantiate(spider, pos, Quaternion.identity);
     }
 
     private void instantiateSaw(Vector3 pos)
     {
-		GameObject childObj = Instantiate (saw.gameObject);
-		childObj.transform.parent = genericObj.transform;
-		childObj.transform.localPosition = pos;
-        
-		//Instantiate(saw, pos, Quaternion.identity);
+        Instantiate(saw, pos, Quaternion.identity);
     }
 }
