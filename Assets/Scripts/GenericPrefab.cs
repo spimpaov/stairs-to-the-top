@@ -12,11 +12,11 @@ public class GenericPrefab : MonoBehaviour {
     private int capacidadeTile;
     private Vector3 pos;
     private float alturaTile;
-    private static int iterationTile;
+    public static int iterationTile;
 
     private void Start()
     {
-        iterationTile = 0;
+        iterationTile = 2;
     }
 
 	static int currentTile = 0;
