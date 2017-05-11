@@ -16,6 +16,6 @@ public class TileData : ScriptableObject {
         public List<SpawnableObject> line = new List<SpawnableObject>();
     }
 
-    public List<linha> matriz = new List<linha>();
+    public List<linha> matriz;
 
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class TileSpawner : MonoBehaviour
 {
     public float timeToNextSpawn;
+    public int spiderLimitPerRandomTile;
     public GenericPrefab aux;
     public List<TileData> tiles;
 	public int tamSpawn; //tamanho do Tile *2
@@ -14,19 +15,21 @@ public class TileSpawner : MonoBehaviour
 	private GameObject player;
 	private int aux_intervalo;
 	private float lastPlayerPosY;
+    private TileData lastTile;
+    private int spiderCount;
 
 
 	void Start() {
 		player = GameObject.FindGameObjectWithTag ("Player");
 		aux_intervalo = intervaloTilesProntos;
-		lastPlayerPosY= player.transform.position.y;
+		lastPlayerPosY = player.transform.position.y;
+        spiderCount = spiderLimitPerRandomTile;
 	}
 
 	//chama uma função a cada x METROS DE ALTURA DO PLAYER (update? corroutine?) que decide se o proximo tile será aleatório ou será um dos já criados
     void Update()
     {   
 		if (player.transform.position.y % tamSpawn == 0 && player.transform.position.y != lastPlayerPosY) {
-			//Debug.Log ("Spawnei. Player.position = " + player.transform.position.y);
 			spawn ();
 			lastPlayerPosY = player.transform.position.y;
 		}
@@ -36,47 +39,167 @@ public class TileSpawner : MonoBehaviour
     void spawn()
     {
 		if (aux_intervalo > 0) {
-			geraTileNovoAleatoriamente ();
+            lastTile = geraTileNovoAleatoriamente();
 			aux_intervalo--;
 		} else {
-			geraTilePronto ();
+            lastTile = geraTilePronto();
 			aux_intervalo = intervaloTilesProntos;
-		}
+
+        }
+        aux.generate(lastTile);
     }
-
-
-
-	void geraTileNovoAleatoriamente() {
-		Debug.Log ("TILE RANDOM");
-		//opção1: preenche as lacunas de um TileData (vazio?) com spawnable objects aleatorios
-		//opção2: gera objetos aleatoriamente tipo como o Spawner antigo funcionava, mas spawnando em blocos (tiles) e não em linhas
-		//caso 1, os objetos ja sao spawnados aqui mesmo o que eu particularmente acho feio
-		//caso 2, geramos um tile e podemos passar ele direto pro Generic Prefab
-
-		//vou fazer o 2
-
+    
+	TileData geraTileNovoAleatoriamente() {
+        Debug.Log("TILE RANDOM");
 		TileData tile = tiles[0];
-		foreach (TileData.linha linha in tile.matriz) {
+		for(int pos_linha = 0; pos_linha < tile.matriz.Count; pos_linha++){
+			TileData.linha linha = tile.matriz[pos_linha];
+			for (int pos_coluna = 0; pos_coluna < linha.line.Count; pos_coluna++) {
+				SpawnableObject temp = (SpawnableObject)Random.Range(0, System.Enum.GetValues(typeof(SpawnableObject)).Length);
+                tile.matriz[pos_linha].line[pos_coluna] = temp;
 
-			for (int i = 0; i < linha.line.Count; i++) {
-				linha.line [i] = (SpawnableObject) Random.Range (0, System.Enum.GetValues (typeof(SpawnableObject)).Length);
-				//Debug.Log("obj: " + linha.line[pos_coluna]);
+                
 
-				//necessario tratar casos especificos: 
-				// - serras em 3 linhas seguidas
-				// - aranhas frequentes
-				// - futuros "momentos" deverão ser implementados
+
+                while (!bomSpawn(pos_linha, pos_coluna, tile, tile.matriz[pos_linha].line[pos_coluna])) {
+					tile.matriz[pos_linha].line [pos_coluna] = 
+					(SpawnableObject) Random.Range (0, System.Enum.GetValues(typeof(SpawnableObject)).Length);
+				}
 
 			}
 		}
-		aux.generate (tile);
+        return tile;
 
 	}
 
-	void geraTilePronto() {
-		Debug.Log ("TILE PRONTO");
-		TileData randomTile = tiles[Random.Range(0, tiles.Count)];
-		//Debug.Log("tile escolhido: " + randomTile);
-		aux.generate(randomTile);
+    List<SpawnableObject> getAdjacent(int pos_linha, int pos_coluna, TileData tile)
+    {
+        List<SpawnableObject> adj = new List<SpawnableObject>();
+        if(tile.matriz[pos_linha].line.Count == 2) {
+
+            adj.Add(tile.matriz[pos_linha].line[(pos_coluna) % 2]);
+
+            if (pos_coluna == 0) {
+
+                if (pos_linha > 0) {
+                    adj.Add(tile.matriz[pos_linha - 1].line[0]);
+
+                    adj.Add(tile.matriz[pos_linha - 1].line[1]);
+
+                }
+                if (pos_linha < tile.matriz.Count -1) {
+                    adj.Add(tile.matriz[pos_linha + 1].line[0]);
+                    adj.Add(tile.matriz[pos_linha + 1].line[1]);
+                }
+                if (pos_linha == tile.matriz.Count && lastTile != null) {
+                    adj.Add(lastTile.matriz[0].line[0]);
+                    adj.Add(lastTile.matriz[0].line[1]);
+                }
+            }
+            
+            else if (pos_coluna == 1) {
+                if (pos_linha > 0) {
+                    adj.Add(tile.matriz[pos_linha - 1].line[1]);
+                    adj.Add(tile.matriz[pos_linha - 1].line[2]);
+                }
+                if (pos_linha < tile.matriz.Count-1) {
+                    adj.Add(tile.matriz[pos_linha + 1].line[1]);
+                    adj.Add(tile.matriz[pos_linha + 1].line[2]);
+                }
+                if (pos_linha == tile.matriz.Count && lastTile != null) {
+                    adj.Add(lastTile.matriz[0].line[1]);
+                    adj.Add(lastTile.matriz[0].line[2]);
+                }
+            }
+
+        } else if (tile.matriz[pos_linha].line.Count == 3) {
+
+            adj.Add(tile.matriz[pos_linha].line[(pos_coluna + 1) % 3]);
+            adj.Add(tile.matriz[pos_linha].line[(pos_coluna + 2) % 3]);
+
+            if (pos_coluna == 0) {
+
+                if (pos_linha > 0) {
+
+                    adj.Add(tile.matriz[pos_linha -1].line[0]);
+                }
+                if (pos_linha < tile.matriz.Count-1) {
+
+                    adj.Add(tile.matriz[pos_linha + 1].line[0]);
+                }
+                if (pos_linha == tile.matriz.Count && lastTile != null) {
+
+                    adj.Add(lastTile.matriz[0].line[0]);
+                }
+            } else if (pos_coluna == 1){
+
+                if (pos_linha > 0) {
+
+                    adj.Add(tile.matriz[pos_linha - 1].line[0]);
+                    adj.Add(tile.matriz[pos_linha - 1].line[1]);
+                }
+                if (pos_linha < tile.matriz.Count-1) {
+
+                    adj.Add(tile.matriz[pos_linha + 1].line[0]);
+                    adj.Add(tile.matriz[pos_linha + 1].line[1]);
+                }
+                if (pos_linha == tile.matriz.Count && lastTile != null) {
+
+                    adj.Add(lastTile.matriz[0].line[0]);
+                    adj.Add(lastTile.matriz[0].line[1]);
+                }
+            } else if (pos_coluna == 2) {
+
+                if (pos_linha > 0) {
+
+                    adj.Add(tile.matriz[pos_linha - 1].line[1]);
+                }
+                if (pos_linha < tile.matriz.Count-1) {
+
+                    adj.Add(tile.matriz[pos_linha + 1].line[1]);
+                }
+                if (pos_linha == tile.matriz.Count && lastTile != null) {
+
+                    adj.Add(lastTile.matriz[0].line[1]);
+                }
+            }
+        }
+        return adj;
+    }
+    
+
+	bool bomSpawn(int pos_linha, int pos_coluna, TileData tile, SpawnableObject so) {
+
+        
+        List<SpawnableObject> adj = getAdjacent(pos_linha, pos_coluna, tile);
+		//checar se há + de 1 serra adjacente à atual
+		if(tile.matriz[pos_linha].line[pos_coluna] == SpawnableObject.SAW && adj.Contains(SpawnableObject.SAW)){
+
+            return false;
+		}
+		//checar se há mais de uma serra numa linha de 2
+		if (pos_linha%2 == 1 
+			&& pos_coluna == 1 
+			&& tile.matriz[pos_linha].line[pos_coluna-1] == SpawnableObject.SAW 
+			&& tile.matriz[pos_linha].line[pos_coluna] == SpawnableObject.SAW) {
+
+            return false;
+		}
+        //checar se tem muita aranha
+         if (so == SpawnableObject.SPIDER)
+         {
+             spiderCount--;
+             if(spiderCount <= 0) return false;
+         }
+
+
+        return true;
+	}
+
+	TileData geraTilePronto() {
+        Debug.Log("TILE PRONTO");
+        TileData randomTile = tiles[Random.Range(0, tiles.Count)];
+        Debug.Log(" * tile escolhido: " + randomTile);
+        return randomTile;
 	}
 }
