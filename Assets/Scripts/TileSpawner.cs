@@ -4,24 +4,35 @@ using UnityEngine;
 
 public class TileSpawner : MonoBehaviour
 {
-    public float timeToNextSpawn;
+	public int intervaloTilesProntos; //numero limite de tiles aleatorios que podem ser gerados em sequencia 
+									  //ate que seja requisitada a geraçao de um novo tile já pronto
     public int spiderLimitPerRandomTile;
-    public GenericPrefab aux;
-    public List<TileData> tiles;
+    public GenericPrefab gp;
+	public TileData tile_random;
+    public List<TileData> tiles_momento1;
+	public List<TileData> tiles_momento2;
+	public List<TileData> tiles_momento3;
+	public List<TileData> tiles_momento4;
+
 	public int tamSpawn; //tamanho do Tile *2
-	public int intervaloTilesProntos; //numero limite de tiles aleatorios que podem ser gerados em sequencia ate que seja requisitada a geraçao de um novo tile já pronto
-									  //caso seja setado em 0, apenas tiles já prontos serão spawnados
+						 //caso seja setado em 0, apenas tiles já prontos serão spawnados
 
 	private GameObject player;
-	private int aux_intervalo;
+	private int gp_intervalo;
 	private float lastPlayerPosY;
     private TileData lastTile;
     private int spiderCount;
+	private int momento;
+    private int last_momento;
+
+    private List<SpawnableObject> SOpermitidos;
 
 
-	void Start() {
+
+    void Start() {
+        SOpermitidos = new List<SpawnableObject>();
 		player = GameObject.FindGameObjectWithTag ("Player");
-		aux_intervalo = intervaloTilesProntos;
+		gp_intervalo = intervaloTilesProntos;
 		lastPlayerPosY = player.transform.position.y;
         spiderCount = spiderLimitPerRandomTile;
 	}
@@ -38,143 +49,68 @@ public class TileSpawner : MonoBehaviour
 	//decide qual tile deverá ser spawnado : um aleatorio ou um já pronto
     void spawn()
     {
-		if (aux_intervalo > 0) {
+		if (gp_intervalo > 0) {
             lastTile = geraTileNovoAleatoriamente();
-			aux_intervalo--;
+			gp_intervalo--;
 		} else {
             lastTile = geraTilePronto();
-			aux_intervalo = intervaloTilesProntos;
-
+			gp_intervalo = intervaloTilesProntos;
         }
-        aux.generate(lastTile);
+        gp.generate(lastTile);
     }
     
 	TileData geraTileNovoAleatoriamente() {
         Debug.Log("TILE RANDOM");
-		TileData tile = tiles[0];
+		TileData tile = tile_random;
 		for(int pos_linha = 0; pos_linha < tile.matriz.Count; pos_linha++){
 			TileData.linha linha = tile.matriz[pos_linha];
 			for (int pos_coluna = 0; pos_coluna < linha.line.Count; pos_coluna++) {
-				SpawnableObject temp = (SpawnableObject)Random.Range(0, System.Enum.GetValues(typeof(SpawnableObject)).Length);
-                tile.matriz[pos_linha].line[pos_coluna] = temp;
 
+                SpawnableObject temp = SOpermitidos[Random.Range(0, SOpermitidos.Count)];
                 
-
-
+                tile.matriz[pos_linha].line[pos_coluna] = temp;
                 while (!bomSpawn(pos_linha, pos_coluna, tile, tile.matriz[pos_linha].line[pos_coluna])) {
-					tile.matriz[pos_linha].line [pos_coluna] = 
-					(SpawnableObject) Random.Range (0, System.Enum.GetValues(typeof(SpawnableObject)).Length);
-				}
-
+					tile.matriz[pos_linha].line[pos_coluna] = SOpermitidos[Random.Range(0, SOpermitidos.Count)];
+                }
 			}
 		}
+        spiderCount = spiderLimitPerRandomTile;
         return tile;
-
 	}
 
-    List<SpawnableObject> getAdjacent(int pos_linha, int pos_coluna, TileData tile)
+    public void setMomento(int valor)
     {
-        List<SpawnableObject> adj = new List<SpawnableObject>();
-        if(tile.matriz[pos_linha].line.Count == 2) {
-
-            adj.Add(tile.matriz[pos_linha].line[(pos_coluna) % 2]);
-
-            if (pos_coluna == 0) {
-
-                if (pos_linha > 0) {
-                    adj.Add(tile.matriz[pos_linha - 1].line[0]);
-
-                    adj.Add(tile.matriz[pos_linha - 1].line[1]);
-
-                }
-                if (pos_linha < tile.matriz.Count -1) {
-                    adj.Add(tile.matriz[pos_linha + 1].line[0]);
-                    adj.Add(tile.matriz[pos_linha + 1].line[1]);
-                }
-                if (pos_linha == tile.matriz.Count && lastTile != null) {
-                    adj.Add(lastTile.matriz[0].line[0]);
-                    adj.Add(lastTile.matriz[0].line[1]);
-                }
-            }
-            
-            else if (pos_coluna == 1) {
-                if (pos_linha > 0) {
-                    adj.Add(tile.matriz[pos_linha - 1].line[1]);
-                    adj.Add(tile.matriz[pos_linha - 1].line[2]);
-                }
-                if (pos_linha < tile.matriz.Count-1) {
-                    adj.Add(tile.matriz[pos_linha + 1].line[1]);
-                    adj.Add(tile.matriz[pos_linha + 1].line[2]);
-                }
-                if (pos_linha == tile.matriz.Count && lastTile != null) {
-                    adj.Add(lastTile.matriz[0].line[1]);
-                    adj.Add(lastTile.matriz[0].line[2]);
-                }
-            }
-
-        } else if (tile.matriz[pos_linha].line.Count == 3) {
-
-            adj.Add(tile.matriz[pos_linha].line[(pos_coluna + 1) % 3]);
-            adj.Add(tile.matriz[pos_linha].line[(pos_coluna + 2) % 3]);
-
-            if (pos_coluna == 0) {
-
-                if (pos_linha > 0) {
-
-                    adj.Add(tile.matriz[pos_linha -1].line[0]);
-                }
-                if (pos_linha < tile.matriz.Count-1) {
-
-                    adj.Add(tile.matriz[pos_linha + 1].line[0]);
-                }
-                if (pos_linha == tile.matriz.Count && lastTile != null) {
-
-                    adj.Add(lastTile.matriz[0].line[0]);
-                }
-            } else if (pos_coluna == 1){
-
-                if (pos_linha > 0) {
-
-                    adj.Add(tile.matriz[pos_linha - 1].line[0]);
-                    adj.Add(tile.matriz[pos_linha - 1].line[1]);
-                }
-                if (pos_linha < tile.matriz.Count-1) {
-
-                    adj.Add(tile.matriz[pos_linha + 1].line[0]);
-                    adj.Add(tile.matriz[pos_linha + 1].line[1]);
-                }
-                if (pos_linha == tile.matriz.Count && lastTile != null) {
-
-                    adj.Add(lastTile.matriz[0].line[0]);
-                    adj.Add(lastTile.matriz[0].line[1]);
-                }
-            } else if (pos_coluna == 2) {
-
-                if (pos_linha > 0) {
-
-                    adj.Add(tile.matriz[pos_linha - 1].line[1]);
-                }
-                if (pos_linha < tile.matriz.Count-1) {
-
-                    adj.Add(tile.matriz[pos_linha + 1].line[1]);
-                }
-                if (pos_linha == tile.matriz.Count && lastTile != null) {
-
-                    adj.Add(lastTile.matriz[0].line[1]);
-                }
-            }
-        }
-        return adj;
+        last_momento = momento;
+        momento = valor;
+        if (last_momento != momento) { ativa_momento(momento); }
     }
-    
 
-	bool bomSpawn(int pos_linha, int pos_coluna, TileData tile, SpawnableObject so) {
+    private void ativa_momento(int num)
+    {
+        switch (num) {
+            case 1:
+                Debug.Log("1");
+                SOpermitidos.Clear();
+                SOpermitidos.Add(SpawnableObject.COIN);
+                SOpermitidos.Add(SpawnableObject.SAW);
+                SOpermitidos.Add(SpawnableObject.NADA);
+                break;
 
-        
+            case 2:
+                Debug.Log("2");
+                SOpermitidos.Clear();
+                SOpermitidos.Add(SpawnableObject.SAW);
+                SOpermitidos.Add(SpawnableObject.COIN);
+                SOpermitidos.Add(SpawnableObject.SPIDER);
+                SOpermitidos.Add(SpawnableObject.NADA);
+                break;
+        }
+    }
+
+    bool bomSpawn(int pos_linha, int pos_coluna, TileData tile, SpawnableObject so) {
         List<SpawnableObject> adj = getAdjacent(pos_linha, pos_coluna, tile);
-		//checar se há + de 1 serra adjacente à atual
-		if(tile.matriz[pos_linha].line[pos_coluna] == SpawnableObject.SAW && adj.Contains(SpawnableObject.SAW)){
-
+        //checar se há + de 1 serra adjacente à atual
+        if (tile.matriz[pos_linha].line[pos_coluna] == SpawnableObject.SAW && adj.Contains(SpawnableObject.SAW)){
             return false;
 		}
 		//checar se há mais de uma serra numa linha de 2
@@ -182,7 +118,6 @@ public class TileSpawner : MonoBehaviour
 			&& pos_coluna == 1 
 			&& tile.matriz[pos_linha].line[pos_coluna-1] == SpawnableObject.SAW 
 			&& tile.matriz[pos_linha].line[pos_coluna] == SpawnableObject.SAW) {
-
             return false;
 		}
         //checar se tem muita aranha
@@ -191,15 +126,129 @@ public class TileSpawner : MonoBehaviour
              spiderCount--;
              if(spiderCount <= 0) return false;
          }
-
-
         return true;
 	}
 
 	TileData geraTilePronto() {
+		TileData randomTile = null;
         Debug.Log("TILE PRONTO");
-        TileData randomTile = tiles[Random.Range(0, tiles.Count)];
+		switch (momento){
+		case 1:
+			randomTile = tiles_momento1 [Random.Range (0, tiles_momento1.Count)];
+			break;
+		case 2:
+			randomTile = tiles_momento2[Random.Range(0, tiles_momento2.Count)];
+			break;
+		case 3:
+			randomTile = tiles_momento3[Random.Range(0, tiles_momento3.Count)];
+			break;
+		case 4:
+			randomTile = tiles_momento4[Random.Range(0, tiles_momento4.Count)];
+			break;
+		}
         Debug.Log(" * tile escolhido: " + randomTile);
         return randomTile;
 	}
+
+    //calcula as adjacencias entre os campos da matriz de um tile
+    List<SpawnableObject> getAdjacent(int pos_linha, int pos_coluna, TileData tile)
+    {
+        List<SpawnableObject> adj = new List<SpawnableObject>();
+        if (tile.matriz[pos_linha].line.Count == 2)
+        {
+
+            adj.Add(tile.matriz[pos_linha].line[(pos_coluna) % 2]);
+
+            if (pos_coluna == 0)
+            {
+                if (pos_linha > 0)
+                {
+                    adj.Add(tile.matriz[pos_linha - 1].line[0]);
+                    adj.Add(tile.matriz[pos_linha - 1].line[1]);
+                }
+                if (pos_linha < tile.matriz.Count - 1)
+                {
+                    adj.Add(tile.matriz[pos_linha + 1].line[0]);
+                    adj.Add(tile.matriz[pos_linha + 1].line[1]);
+                }
+                if (pos_linha == tile.matriz.Count && lastTile != null)
+                {
+                    adj.Add(lastTile.matriz[0].line[0]);
+                    adj.Add(lastTile.matriz[0].line[1]);
+                }
+            }
+            else if (pos_coluna == 1)
+            {
+                if (pos_linha > 0)
+                {
+                    adj.Add(tile.matriz[pos_linha - 1].line[1]);
+                    adj.Add(tile.matriz[pos_linha - 1].line[2]);
+                }
+                if (pos_linha < tile.matriz.Count - 1)
+                {
+                    adj.Add(tile.matriz[pos_linha + 1].line[1]);
+                    adj.Add(tile.matriz[pos_linha + 1].line[2]);
+                }
+                if (pos_linha == tile.matriz.Count && lastTile != null)
+                {
+                    adj.Add(lastTile.matriz[0].line[1]);
+                    adj.Add(lastTile.matriz[0].line[2]);
+                }
+            }
+        }
+        else if (tile.matriz[pos_linha].line.Count == 3)
+        {
+            adj.Add(tile.matriz[pos_linha].line[(pos_coluna + 1) % 3]);
+            adj.Add(tile.matriz[pos_linha].line[(pos_coluna + 2) % 3]);
+            if (pos_coluna == 0)
+            {
+                if (pos_linha > 0)
+                {
+                    adj.Add(tile.matriz[pos_linha - 1].line[0]);
+                }
+                if (pos_linha < tile.matriz.Count - 1)
+                {
+                    adj.Add(tile.matriz[pos_linha + 1].line[0]);
+                }
+                if (pos_linha == tile.matriz.Count && lastTile != null)
+                {
+                    adj.Add(lastTile.matriz[0].line[0]);
+                }
+            }
+            else if (pos_coluna == 1)
+            {
+                if (pos_linha > 0)
+                {
+                    adj.Add(tile.matriz[pos_linha - 1].line[0]);
+                    adj.Add(tile.matriz[pos_linha - 1].line[1]);
+                }
+                if (pos_linha < tile.matriz.Count - 1)
+                {
+                    adj.Add(tile.matriz[pos_linha + 1].line[0]);
+                    adj.Add(tile.matriz[pos_linha + 1].line[1]);
+                }
+                if (pos_linha == tile.matriz.Count && lastTile != null)
+                {
+                    adj.Add(lastTile.matriz[0].line[0]);
+                    adj.Add(lastTile.matriz[0].line[1]);
+                }
+            }
+            else if (pos_coluna == 2)
+            {
+                if (pos_linha > 0)
+                {
+                    adj.Add(tile.matriz[pos_linha - 1].line[1]);
+                }
+                if (pos_linha < tile.matriz.Count - 1)
+                {
+                    adj.Add(tile.matriz[pos_linha + 1].line[1]);
+                }
+                if (pos_linha == tile.matriz.Count && lastTile != null)
+                {
+                    adj.Add(lastTile.matriz[0].line[1]);
+                }
+            }
+        }
+        return adj;
+    }
 }

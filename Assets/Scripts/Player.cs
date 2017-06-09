@@ -10,14 +10,18 @@ public class Player : GridObject {
 	public bool martelo = false, boia = false;
     public float timeMartelo = 10f;
     public float timeLeftMartelo;
+	public int num_momentos; //numero de momentos existentes
+	public float alt_momento; //define a altura de um momento (único para todos os momentos)
     
     private Vector3 vetorDirecaoAtual = new Vector3(0,0,0);
-    private GameObject scoreText;
+	private GameObject scoreText;
+	private TileSpawner tileSpawner;
 
     private void Start()
     {
         timeLeftMartelo = timeMartelo;
-        scoreText = GameObject.FindGameObjectWithTag("ScoreText");
+		scoreText = GameObject.FindGameObjectWithTag("ScoreText");
+		tileSpawner = GameObject.FindGameObjectWithTag("TileSpawner").GetComponent<TileSpawner>();
     }
 
     void Update(){
@@ -29,6 +33,22 @@ public class Player : GridObject {
 			forceIdleAnim ();
 		}
         hasHammer();
+
+		checkAltura();
+	}
+
+	private void checkAltura() {
+		int momento = 0;
+		float y_player = this.transform.position.y % (alt_momento * num_momentos);
+		for (int i = 1; i <= num_momentos; i++) {
+			float limite_atual = alt_momento * i;
+			if (y_player < limite_atual) {
+				momento = i;
+				break;
+			}
+		}
+		//Debug.Log ("momento: " + momento);
+		tileSpawner.setMomento(momento);
 	}
 
 	public void criaEscada(Direction direcao) {
