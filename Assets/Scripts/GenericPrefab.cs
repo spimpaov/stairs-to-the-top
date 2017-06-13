@@ -6,7 +6,8 @@ public class GenericPrefab : MonoBehaviour {
     
     public Coin coin;
     public Saw saw;
-    public Spider spider;
+	public Spider spider;
+	public PowerUp powerUp;
 
 	private GameObject genericObj;
     private int capacidadeTile;
@@ -36,33 +37,48 @@ public class GenericPrefab : MonoBehaviour {
 		genericObj.transform.position = new Vector3 (0, calculaAlturaRelativaTile(), 0);
 		iterationTile++;
 
-        foreach (TileData.linha linha in tile.matriz) {
-            int pos_linha = tile.matriz.IndexOf(linha);
+		foreach (TileData.linha linha in tile.matriz) {
+			int pos_linha = tile.matriz.IndexOf (linha);
 			//Debug.Log("pos_linha: " + pos_linha);
 
 			for (int i = 0; i < linha.line.Count; i++) {
-                int pos_coluna = i;
-				SpawnableObject so = linha.line [pos_coluna];
-                //Debug.Log("* pos_coluna: " + pos_coluna);
+				int pos_coluna = i;
 
-                switch (so) {
-                    case SpawnableObject.NADA:
-                        break;
-                    case SpawnableObject.COIN:
-                        pos = calculaPos(pos_linha, pos_coluna);
-                        instantiateCoin(pos);
-                        break;
-                    case SpawnableObject.SAW:
-                        pos = calculaPos(pos_linha, pos_coluna);
-                        instantiateSaw(pos);
-                        break;
-                    case SpawnableObject.SPIDER:
-                        pos = calculaPos(pos_linha, pos_coluna);
-                        instantiateSpider(pos);
-                        break;
-                }
-            }
-        }
+				//geração de power up
+				/*
+				if (linha.hasPowerUp) {
+					Debug.Log ("criei um power up");
+					pos = calculaPos (pos_linha, pos_coluna);
+					instantiatePowerUp (pos);
+				}
+				*/
+
+				SpawnableObject so = linha.line [pos_coluna];
+				//Debug.Log("* pos_coluna: " + pos_coluna);
+
+				switch (so) {
+				case SpawnableObject.NADA:
+					break;
+				case SpawnableObject.COIN:
+					pos = calculaPos (pos_linha, pos_coluna);
+					instantiateCoin (pos);
+					break;
+				case SpawnableObject.SAW:
+					pos = calculaPos (pos_linha, pos_coluna);
+					instantiateSaw (pos);
+					break;
+				case SpawnableObject.SPIDER:
+					pos = calculaPos (pos_linha, pos_coluna);
+					instantiateSpider (pos);
+					break;
+				case SpawnableObject.POWER_UP:
+					Debug.Log ("spawnei power up");
+					pos = calculaPos (pos_linha, pos_coluna);
+					instantiatePowerUp (new Vector3 (pos.x, pos.y - 3, 0));
+					break;
+				}
+			}
+		}
     }
 
     //calcular a posição do objeto na grid de acordo com a posição dele dentro do tile 
@@ -134,4 +150,10 @@ public class GenericPrefab : MonoBehaviour {
         
 		//Instantiate(saw, pos, Quaternion.identity);
     }
+
+	private void instantiatePowerUp(Vector3 pos) {
+		GameObject childObj = Instantiate (powerUp.gameObject);
+		childObj.transform.parent = genericObj.transform;
+		childObj.transform.localPosition = pos;
+	}
 }

@@ -89,7 +89,7 @@ public class TileSpawner : MonoBehaviour
     {
         switch (num) {
             case 1:
-                Debug.Log("1");
+//                Debug.Log("1");
                 SOpermitidos.Clear();
                 SOpermitidos.Add(SpawnableObject.COIN);
                 SOpermitidos.Add(SpawnableObject.SAW);
@@ -97,7 +97,7 @@ public class TileSpawner : MonoBehaviour
                 break;
 
             case 2:
-                Debug.Log("2");
+ //               Debug.Log("2");
                 SOpermitidos.Clear();
                 SOpermitidos.Add(SpawnableObject.SAW);
                 SOpermitidos.Add(SpawnableObject.COIN);
