@@ -118,6 +118,11 @@ public class Player : GridObject {
             else destroyPlayer();
         }
 
+        if (target.gameObject.tag == "Laser")
+        {
+            destroyPlayer();
+        }
+
         if (target.gameObject.tag == "Water")
         {
             if (boia) { ; }
@@ -131,7 +136,7 @@ public class Player : GridObject {
         }
     }
 
-    void destroyPlayer()
+    public void destroyPlayer()
     {
         scoreText.GetComponent<ScoreText>().setHighscore();
         SceneManager.LoadScene("GameOver");
