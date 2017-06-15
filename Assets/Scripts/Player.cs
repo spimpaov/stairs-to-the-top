@@ -16,12 +16,14 @@ public class Player : GridObject {
     private Vector3 vetorDirecaoAtual = new Vector3(0,0,0);
 	private GameObject scoreText;
 	private TileSpawner tileSpawner;
+	private MadeiraManager madeiraManager;
 
     private void Start()
     {
         timeLeftMartelo = timeMartelo;
 		scoreText = GameObject.FindGameObjectWithTag("ScoreText");
 		tileSpawner = GameObject.FindGameObjectWithTag("TileSpawner").GetComponent<TileSpawner>();
+        madeiraManager = GameObject.FindGameObjectWithTag("MadeiraManager").GetComponent<MadeiraManager>();
     }
 
     void Update(){
@@ -59,28 +61,45 @@ public class Player : GridObject {
 				//Debug.Log ("AconteceuRU");
 				return;
 			}
-			if(transform.position.x < 4 && transform.position == targetPOS) Instantiate(ladderA,transform.position + new Vector3(1,0,0), Quaternion.identity);
-			break;
+            if (transform.position.x < 4 && transform.position == targetPOS)
+            {
+                Instantiate(ladderA, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
+                madeiraManager.delMadeira();
+            }
+
+                break;
 		case Direction.RIGHT_DOWN:
 			if (existeEscada (Direction.RIGHT_DOWN)) {
 				//Debug.Log ("AconteceuRD");
 				return;
 			}
-			if(transform.position.x < 4 && transform.position == targetPOS) Instantiate(ladderB,transform.position - new Vector3(-1,2,0), Quaternion.identity);
+            if (transform.position.x < 4 && transform.position == targetPOS)
+            {
+                Instantiate(ladderB, transform.position - new Vector3(-1, 2, 0), Quaternion.identity);
+                madeiraManager.delMadeira();
+            }
 			break;
 		case Direction.LEFT_UP:
 			if (existeEscada (Direction.LEFT_UP)) {
 				//Debug.Log ("AconteceuLU");
 				return;
 			}
-			if(transform.position.x > -4 && transform.position == targetPOS) Instantiate(ladderB,transform.position - new Vector3(1,0,0), Quaternion.identity);
+            if (transform.position.x > -4 && transform.position == targetPOS)
+            {
+                Instantiate(ladderB, transform.position - new Vector3(1, 0, 0), Quaternion.identity);
+                madeiraManager.delMadeira();
+            }
 			break;
 		case Direction.LEFT_DOWN:
 			if (existeEscada (Direction.LEFT_DOWN)) {
 				//Debug.Log ("AconteceuLD");
 				return;
 			}
-			if(transform.position.x > -4 && transform.position == targetPOS) Instantiate(ladderA,transform.position - new Vector3(1,2,0), Quaternion.identity);
+            if (transform.position.x > -4 && transform.position == targetPOS)
+            {
+                Instantiate(ladderA, transform.position - new Vector3(1, 2, 0), Quaternion.identity);
+                madeiraManager.delMadeira();
+            }
 			break;
 		}
 	}
@@ -107,8 +126,9 @@ public class Player : GridObject {
 
     void OnTriggerEnter2D(Collider2D target)
     {
-        if (target.gameObject.tag == "Coin")
+        if (target.gameObject.tag == "Madeira")
         {
+            madeiraManager.addMadeira();
             target.GetComponent<Coin>().destroyCoin();
         }
 
@@ -121,6 +141,11 @@ public class Player : GridObject {
         if (target.gameObject.tag == "Laser")
         {
             destroyPlayer();
+        }
+
+        if (target.gameObject.tag == "ToggleSwitch")
+        {
+            target.GetComponent<ToggleSwitch>().activateToggleSwitch();
         }
 
         if (target.gameObject.tag == "Water")

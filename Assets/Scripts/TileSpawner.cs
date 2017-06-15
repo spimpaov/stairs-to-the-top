@@ -104,6 +104,13 @@ public class TileSpawner : MonoBehaviour
                 SOpermitidos.Add(SpawnableObject.SPIDER);
                 SOpermitidos.Add(SpawnableObject.NADA);
                 break;
+            case 3:
+                SOpermitidos.Clear();
+                SOpermitidos.Add(SpawnableObject.SAW);
+                SOpermitidos.Add(SpawnableObject.COIN);
+                SOpermitidos.Add(SpawnableObject.SPIDER);
+                SOpermitidos.Add(SpawnableObject.NADA);
+                break;
         }
     }
 

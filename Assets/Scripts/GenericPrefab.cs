@@ -8,12 +8,18 @@ public class GenericPrefab : MonoBehaviour {
     public Saw saw;
 	public Spider spider;
 	public PowerUp powerUp;
+	public ToggleSwitch toggle_switch;
+	public Laser laser;
+
+    public static int iterationTile;
 
 	private GameObject genericObj;
     private int capacidadeTile;
     private Vector3 pos;
     private float alturaTile;
-    public static int iterationTile;
+    private SpawnableObject curr_laser;
+    private Vector3 curr_laser_pos;
+    private SpawnableObject curr_toggle_switch;
 
     private void Start()
     {
@@ -37,7 +43,44 @@ public class GenericPrefab : MonoBehaviour {
 		genericObj.transform.position = new Vector3 (0, calculaAlturaRelativaTile(), 0);
 		iterationTile++;
 
-		foreach (TileData.linha linha in tile.matriz) {
+
+        //procura pelo laser
+        foreach (TileData.linha linha in tile.matriz)
+        {
+            int pos_linha = tile.matriz.IndexOf(linha);
+            for (int i = 0; i < linha.line.Count; i++)
+            {
+                int pos_coluna = i;
+                SpawnableObject so = linha.line[pos_coluna];
+                switch (so)
+                {
+                    case SpawnableObject.LASER:
+                        curr_laser = so;
+                        curr_laser_pos = calculaPos(pos_linha, pos_coluna);
+                        break;
+                }
+            }
+        }
+
+        //procura pelo toggle_switch
+        foreach (TileData.linha linha in tile.matriz)
+        {
+            int pos_linha = tile.matriz.IndexOf(linha);
+            for (int i = 0; i < linha.line.Count; i++)
+            {
+                int pos_coluna = i;
+                SpawnableObject so = linha.line[pos_coluna];
+                switch (so)
+                {
+                    case SpawnableObject.TOGGLE_SWITCH:
+                        pos = calculaPos(pos_linha, pos_coluna);
+                        instantiateToggleSwitch(pos, curr_laser_pos);
+                        break;
+                }
+            }
+        }
+        
+        foreach (TileData.linha linha in tile.matriz) {
 			int pos_linha = tile.matriz.IndexOf (linha);
 			//Debug.Log("pos_linha: " + pos_linha);
 
@@ -156,4 +199,22 @@ public class GenericPrefab : MonoBehaviour {
 		childObj.transform.parent = genericObj.transform;
 		childObj.transform.localPosition = pos;
 	}
+
+    private void instantiateToggleSwitch(Vector3 toggle_switch_pos, Vector3 laser_pos)
+    {
+        GameObject childObj = Instantiate(toggle_switch.gameObject);
+        childObj.transform.parent = genericObj.transform;
+        childObj.transform.localPosition = toggle_switch_pos;
+        GameObject laserObj = instantiateLaser(laser_pos);
+        childObj.gameObject.GetComponent<ToggleSwitch>().laser = laserObj.GetComponent<Laser>();
+        Debug.Log("linkei");
+    }
+
+    private GameObject instantiateLaser(Vector3 pos)
+    {
+        GameObject childObj = Instantiate(laser.gameObject);
+        childObj.transform.parent = genericObj.transform;
+        childObj.transform.localPosition = pos;
+        return childObj;
+    }
 }

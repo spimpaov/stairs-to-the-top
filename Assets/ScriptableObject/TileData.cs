@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum SpawnableObject {
-    NADA, SAW, SPIDER, COIN, POWER_UP
+    NADA, SAW, SPIDER, COIN, POWER_UP, TOGGLE_SWITCH, LASER
 };
 
 [CreateAssetMenu(menuName = "Custom/Tile")]
