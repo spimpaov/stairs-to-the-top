@@ -17,7 +17,7 @@ public class ScoreText : MonoBehaviour {
 	}
 
 	private void showScore() {
-        if (inGame) { text.GetComponent<Text>().text = "Score: " + score.ToString(); }
+        if (inGame) { text.GetComponent<Text>().text = score.ToString(); }
         else { text.GetComponent<Text>().text = "Score: " + PlayerPrefs.GetInt("Score") + "\nHighscore: " + PlayerPrefs.GetInt("Highscore"); }
     }
 

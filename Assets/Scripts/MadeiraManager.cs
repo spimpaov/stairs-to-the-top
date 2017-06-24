@@ -41,7 +41,7 @@ public class MadeiraManager : MonoBehaviour {
 
     private void showMadeira()
     {
-        madeira_text.text = "Madeira: " + qntd_madeira_atual.ToString();
+        madeira_text.text = qntd_madeira_atual.ToString();
     }
 
 }
