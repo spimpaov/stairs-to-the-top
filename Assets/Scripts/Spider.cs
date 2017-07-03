@@ -53,6 +53,19 @@ public class Spider : GridObject {
 
     public void destroySpider()
     {
-        Destroy(this.gameObject);
+        Destroy(this.gameObject,4f);
+    }
+    public void destroySpiderByPlayer(bool right)
+    {
+        GetComponent<Rigidbody2D>().gravityScale = 5;
+        if(!right){
+            GetComponent<Rigidbody2D>().AddForce(Vector3.up*600f+Vector3.right*200f);
+        }else{
+            GetComponent<Rigidbody2D>().AddForce(Vector3.up*600f+Vector3.left*200f);
+        }
+        
+        GetComponent<BoxCollider2D>().enabled = false;
+        Destroy(this.gameObject,4f);
+        GetComponent<Spider>().enabled = false;
     }
 }

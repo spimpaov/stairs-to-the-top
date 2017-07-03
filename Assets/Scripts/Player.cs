@@ -156,7 +156,7 @@ public class Player : GridObject {
 
         if (target.gameObject.tag == "Spider")
         {
-            if (martelo) target.GetComponent<Spider>().destroySpider();
+            if (martelo) target.GetComponent<Spider>().destroySpiderByPlayer(transform.position.x>target.transform.position.x);
             else destroyPlayer();
         }
     }
@@ -196,6 +196,11 @@ public class Player : GridObject {
 	}
 
 	void playerAnimation(){
+		if(martelo){
+			this.gameObject.GetComponent<Animator> ().SetBool ("hammer",true);
+		}else{
+			this.gameObject.GetComponent<Animator> ().SetBool ("hammer",false);
+		}
 		if (vetorDirecaoAtual.x < 0) {
 			forceIdleAnim ();
 			this.gameObject.GetComponent<Animator> ().SetBool ("move",true);
