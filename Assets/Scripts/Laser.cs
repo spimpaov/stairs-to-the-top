@@ -14,14 +14,12 @@ public class Laser : MonoBehaviour {
 	}
 	public void Desativar(){
 		if(!off){
-			Debug.Log("OIPORRA");
 			transform.GetChild(0).GetComponent<BoxCollider2D>().enabled = false;
 			StartCoroutine(TurnOffLaserRay());
 		}
 	}
 	private IEnumerator TurnOffLaserRay(){
 		while(mySR.size.x > 0){
-			Debug.Log(mySR.size.x);
 			mySR.size = new Vector2(mySR.size.x*turningOffVelocity, mySR.size.y);
 			yield return new WaitForEndOfFrame();
 		}

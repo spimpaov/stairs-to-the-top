@@ -18,8 +18,13 @@ public class Player : GridObject {
 	private TileSpawner tileSpawner;
 	private MadeiraManager madeiraManager;
 
+	private Vector3 initPos;
+	public bool moved;
+
     private void Start()
     {
+		moved = false;
+		initPos = this.transform.position;
         timeLeftMartelo = timeMartelo;
 		scoreText = GameObject.FindGameObjectWithTag("ScoreText");
 		tileSpawner = GameObject.FindGameObjectWithTag("TileSpawner").GetComponent<TileSpawner>();
@@ -27,6 +32,10 @@ public class Player : GridObject {
     }
 
     void Update(){
+		if(!moved && transform.position != initPos){
+			moved=true;
+			GetComponent<ReadyScreen>().BeginGame();
+		}
         InputTeclado();
         transform.position = Vector3.MoveTowards(transform.position, targetPOS, speed * Time.deltaTime);
 		vetorDirecaoAtual = targetPOS - transform.position;

@@ -48,7 +48,7 @@ public class BackgroundCreator : MonoBehaviour {
 		lastBgHeight = position.y;
 	}
 	private void CanCreateBackground(){
-		if(cameraHeight > bgSize){
+		if(cameraHeight > lastBgHeight){
 			CreateBackground();
 		}
 	}
