@@ -2,6 +2,9 @@
 using UnityEngine.SceneManagement;
 using System.Collections;
 
+public enum PlayerKill{
+	WATER,SERRA,ARANHA,LASER
+}
 public class Player : GridObject {
 
 	public Transform target;
@@ -144,12 +147,15 @@ public class Player : GridObject {
         if (target.gameObject.tag == "Saw")
         {
             if (martelo) target.GetComponent<Saw>().destroySaw();
-            else destroyPlayer();
+            else {
+				KillPlayer(PlayerKill.SERRA);
+				StartCoroutine(destroyPlayer());
+				}
         }
 
         if (target.gameObject.tag == "Laser")
         {
-            destroyPlayer();
+            StartCoroutine(destroyPlayer());
         }
 
         if (target.gameObject.tag == "ToggleSwitch")
@@ -160,23 +166,36 @@ public class Player : GridObject {
         if (target.gameObject.tag == "Water")
         {
             if (boia) { ; }
-            else destroyPlayer();
+            else StartCoroutine(destroyPlayer());
         }
 
         if (target.gameObject.tag == "Spider")
         {
             if (martelo) target.GetComponent<Spider>().destroySpiderByPlayer(transform.position.x>target.transform.position.x);
-            else destroyPlayer();
+            else StartCoroutine(destroyPlayer());
         }
     }
-
-    public void destroyPlayer()
+	//Pedro: Alguem chamava essa destroy player? Pq ela era publica?
+    public IEnumerator destroyPlayer()
     {
         scoreText.GetComponent<ScoreText>().setHighscore();
+		GameObject.Find("Transition_Mask").GetComponent<TransitionMask>().Bigger_transition();
+		yield return new WaitForSeconds(1);
         SceneManager.LoadScene("GameOver");
-        //Destroy(this.gameObject);
     }
+	private void KillPlayer(PlayerKill modo){
+		switch(modo){
+			case PlayerKill.ARANHA:
 
+			case PlayerKill.LASER:
+				//Fumaça
+			case PlayerKill.SERRA:
+			case PlayerKill.WATER:
+				//Afunda na agua
+			default:
+				break;
+		}
+	}
 	bool existeEscada(Direction direcao){
 		RaycastHit2D hit;
 		Vector3 alvo = new Vector3(0,0,0);
