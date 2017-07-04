@@ -214,7 +214,7 @@ public class GenericPrefab : MonoBehaviour {
     {
         GameObject childObj = Instantiate(laser.gameObject);
         childObj.transform.parent = genericObj.transform;
-        childObj.transform.localPosition = pos;
+        childObj.transform.localPosition = pos + Vector3.left*5f;//editado por mcPedrinho123
         return childObj;
     }
 }

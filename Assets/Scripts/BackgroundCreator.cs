@@ -40,7 +40,11 @@ public class BackgroundCreator : MonoBehaviour {
 	}
 	private void CreateBackground(){
 		Vector3 position = new Vector3(0, lastBgHeight+bgSize, 1);
-		Instantiate(bgList[3], position, Quaternion.identity);
+		if(Random.Range(0,100)< 71){
+			Instantiate(bgList[3], position, Quaternion.identity);
+		}else{
+			Instantiate(bgList[Random.Range(0,bgList.Count)], position, Quaternion.identity);
+		}
 		lastBgHeight = position.y;
 	}
 	private void CanCreateBackground(){

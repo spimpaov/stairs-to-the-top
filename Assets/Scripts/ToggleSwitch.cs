@@ -6,13 +6,13 @@ public class ToggleSwitch : MonoBehaviour {
 
     public Laser laser;
 
-    private bool activated = false;
+    [SerializeField] private bool activated = false;
 
     public void activateToggleSwitch()
     {
         activated = true;
         Debug.Log("LASER: " + laser);
-        laser.GetComponent<BoxCollider2D>().enabled = false;
+        laser.Desativar();
         //Debug.Log("switch ativado: " + activated);
     }
 
