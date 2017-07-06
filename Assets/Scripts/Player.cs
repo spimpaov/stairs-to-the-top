@@ -20,9 +20,11 @@ public class Player : GridObject {
 	private GameObject scoreText;
 	private TileSpawner tileSpawner;
 	private MadeiraManager madeiraManager;
+	public bool moved;
 
 	private Vector3 initPos;
-	public bool moved;
+    private Vector3 sightStart, sightEndRU, sightEndLU, sightEndRD, sightEndLD;
+    public bool spottedRU, spottedLU, spottedRD, spottedLD;
 
     private void Start()
     {
@@ -49,7 +51,45 @@ public class Player : GridObject {
         hasHammer();
 
 		checkAltura();
+
+        raycast();
 	}
+
+    void raycast()
+    {
+        sightStart = this.transform.position + new Vector3 (0, -1, 0);
+        sightEndRU = sightStart + new Vector3(1f, 1f, 0);
+        sightEndLU = sightStart + new Vector3(-1f, 1f, 0);
+        sightEndRD = sightStart + new Vector3(1f, -1f, 0);
+        sightEndLD = sightStart + new Vector3(-1f, -1f, 0);
+
+        Debug.DrawLine(sightStart, sightEndRU, Color.magenta);
+        Debug.DrawLine(sightStart, sightEndLU, Color.red);
+        Debug.DrawLine(sightStart, sightEndRD, Color.blue);
+        Debug.DrawLine(sightStart, sightEndLD, Color.yellow);
+
+        spottedRU = Physics2D.Linecast(new Vector2(sightStart.x, sightStart.y), new Vector2(sightEndRU.x, sightEndRU.y), 1 << LayerMask.NameToLayer("Escada"));
+        spottedLU = Physics2D.Linecast(sightStart, sightEndLU, 1 << LayerMask.NameToLayer("Escada"));
+        spottedRD = Physics2D.Linecast(sightStart, sightEndRD, 1 << LayerMask.NameToLayer("Escada"));
+        spottedLD = Physics2D.Linecast(sightStart, sightEndLD, 1 << LayerMask.NameToLayer("Escada"));
+    }
+
+    public bool playerAdjEscada()
+    {
+        int count = 0;
+        if (spottedRU) { count++; }
+        if (spottedLU) { count++; }
+        if (spottedRD) { count++; }
+        if (spottedLD) { count++; }
+
+        Debug.Log("count: " + count);
+
+        if (count > 1)
+        {
+            return true;
+        }
+        else return false;
+    }
 
 	private void checkAltura() {
 		int momento = 0;
@@ -175,7 +215,13 @@ public class Player : GridObject {
             else StartCoroutine(destroyPlayer());
         }
     }
-	//Pedro: Alguem chamava essa destroy player? Pq ela era publica?
+
+    public void playerDed()
+    {
+        StartCoroutine(destroyPlayer());
+    }
+
+	//Pedro: Alguem chamava essa destroy player? Pq ela era publica? 
     public IEnumerator destroyPlayer()
     {
         scoreText.GetComponent<ScoreText>().setHighscore();

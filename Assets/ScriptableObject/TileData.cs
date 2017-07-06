@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum SpawnableObject {
-    NADA, SAW, SPIDER, COIN, POWER_UP, TOGGLE_SWITCH, LASER
+    NADA, SAW, SPIDER, COIN, POWER_UP, TOGGLE_SWITCH, LASER, CUPIM
 };
 
 [CreateAssetMenu(menuName = "Custom/Tile")]
@@ -15,7 +15,6 @@ public class TileData : ScriptableObject {
     {
         public List<SpawnableObject> line = new List<SpawnableObject>();
     }
-
     public List<linha> matriz;
 
 }

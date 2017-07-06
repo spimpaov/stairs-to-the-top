@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class PowerUp : MonoBehaviour {
 
     public Transform sightStart, sightEndXY, sightEnd_XY, sightEndX_Y, sightEnd_X_Y;
-    public int relacaoScoreToPowerUpText = 500;
 
     private bool spottedXY = false, spotted_XY = false, spottedX_Y = false, spotted_X_Y = false;
     //private GameObject HUD;
@@ -21,7 +20,6 @@ public class PowerUp : MonoBehaviour {
         //score = GameObject.FindGameObjectWithTag("Score");
         player = GameObject.FindGameObjectWithTag("Player");
 		text_sucesso = GameObject.FindGameObjectWithTag ("TextoPOColetado");
-		Debug.Log (text_sucesso);
     }
 
     void Update ()

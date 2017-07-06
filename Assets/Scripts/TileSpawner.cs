@@ -72,7 +72,7 @@ public class TileSpawner : MonoBehaviour
                 while (!bomSpawn(pos_linha, pos_coluna, tile, tile.matriz[pos_linha].line[pos_coluna])) {
 					tile.matriz[pos_linha].line[pos_coluna] = SOpermitidos[Random.Range(0, SOpermitidos.Count)];
                 }
-			}
+            }
 		}
         spiderCount = spiderLimitPerRandomTile;
         return tile;
@@ -81,7 +81,7 @@ public class TileSpawner : MonoBehaviour
     public void setMomento(int valor)
     {
         last_momento = momento;
-        momento = valor;
+        momento = 4;
         if (last_momento != momento) { ativa_momento(momento); }
     }
 
@@ -89,7 +89,6 @@ public class TileSpawner : MonoBehaviour
     {
         switch (num) {
             case 1:
-//                Debug.Log("1");
                 SOpermitidos.Clear();
                 SOpermitidos.Add(SpawnableObject.COIN);
                 SOpermitidos.Add(SpawnableObject.SAW);
@@ -97,7 +96,6 @@ public class TileSpawner : MonoBehaviour
                 break;
 
             case 2:
- //               Debug.Log("2");
                 SOpermitidos.Clear();
                 SOpermitidos.Add(SpawnableObject.SAW);
                 SOpermitidos.Add(SpawnableObject.COIN);
@@ -111,15 +109,32 @@ public class TileSpawner : MonoBehaviour
                 SOpermitidos.Add(SpawnableObject.SPIDER);
                 SOpermitidos.Add(SpawnableObject.NADA);
                 break;
+            case 4:
+                SOpermitidos.Clear();
+                //SOpermitidos.Add(SpawnableObject.SAW);
+                SOpermitidos.Add(SpawnableObject.COIN);
+                SOpermitidos.Add(SpawnableObject.SPIDER);
+                SOpermitidos.Add(SpawnableObject.CUPIM);
+                SOpermitidos.Add(SpawnableObject.NADA);
+                break;
+                
         }
     }
 
     bool bomSpawn(int pos_linha, int pos_coluna, TileData tile, SpawnableObject so) {
         List<SpawnableObject> adj = getAdjacent(pos_linha, pos_coluna, tile);
-        //checar se há + de 1 serra adjacente à atual
-        if (tile.matriz[pos_linha].line[pos_coluna] == SpawnableObject.SAW && adj.Contains(SpawnableObject.SAW)){
+        //checar se há serra adjacente à atual
+
+        //TODO: trocar pra checar se há mais de 1 serra na adj
+
+        if (tile.matriz[pos_linha].line[pos_coluna] == SpawnableObject.SAW && adj.Contains(SpawnableObject.SAW)) {
             return false;
 		}
+        //checar se há serra nas adjacências de um cupim
+        if (tile.matriz[pos_linha].line[pos_coluna] == SpawnableObject.CUPIM && adj.Contains(SpawnableObject.SAW)) {
+            return false;
+        }
+
 		//checar se há mais de uma serra numa linha de 2
 		if (pos_linha%2 == 1 
 			&& pos_coluna == 1 

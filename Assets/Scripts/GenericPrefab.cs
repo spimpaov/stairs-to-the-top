@@ -10,6 +10,7 @@ public class GenericPrefab : MonoBehaviour {
 	public PowerUp powerUp;
 	public ToggleSwitch toggle_switch;
 	public Laser laser;
+    public Cupim cupim;
 
     public static int iterationTile;
 
@@ -112,12 +113,18 @@ public class GenericPrefab : MonoBehaviour {
 					break;
 				case SpawnableObject.SPIDER:
 					pos = calculaPos (pos_linha, pos_coluna);
-					instantiateSpider (pos);
+					//instantiateSpider (pos);
 					break;
+                case SpawnableObject.CUPIM:
+                    pos = calculaPos(pos_linha, pos_coluna);
+                    //instantiateCupim(pos);
+                    if (pos.x != 4) {
+                        instantiateCupim(new Vector3 (pos.x + 0.8f, pos.y - 2, 0));
+                    }
+                    break;
 				case SpawnableObject.POWER_UP:
-					Debug.Log ("spawnei power up");
 					pos = calculaPos (pos_linha, pos_coluna);
-					instantiatePowerUp (new Vector3 (pos.x, pos.y - 3, 0));
+					instantiatePowerUp (new Vector3 (pos.x, pos.y - 2, 0));
 					break;
 				}
 			}
@@ -200,6 +207,13 @@ public class GenericPrefab : MonoBehaviour {
 		childObj.transform.localPosition = pos;
 	}
 
+    private void instantiateCupim(Vector3 pos)
+    {
+        GameObject childObj = Instantiate(cupim.gameObject);
+        childObj.transform.parent = genericObj.transform;
+        childObj.transform.localPosition = pos;
+    }
+
     private void instantiateToggleSwitch(Vector3 toggle_switch_pos, Vector3 laser_pos)
     {
         GameObject childObj = Instantiate(toggle_switch.gameObject);
@@ -207,7 +221,6 @@ public class GenericPrefab : MonoBehaviour {
         childObj.transform.localPosition = toggle_switch_pos;
         GameObject laserObj = instantiateLaser(laser_pos);
         childObj.gameObject.GetComponent<ToggleSwitch>().laser = laserObj.GetComponent<Laser>();
-        Debug.Log("linkei");
     }
 
     private GameObject instantiateLaser(Vector3 pos)
