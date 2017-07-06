@@ -16,6 +16,7 @@ public class Player : GridObject {
 	public int num_momentos; //numero de momentos existentes
 	public float alt_momento; //define a altura de um momento (único para todos os momentos)
     
+    private bool paused = false;
     private Vector3 vetorDirecaoAtual = new Vector3(0,0,0);
 	private GameObject scoreText;
 	private TileSpawner tileSpawner;
@@ -36,23 +37,46 @@ public class Player : GridObject {
         madeiraManager = GameObject.FindGameObjectWithTag("MadeiraManager").GetComponent<MadeiraManager>();
     }
 
+
+    public void pauseGame()
+    {
+        paused = true;
+        Debug.Log("pause");
+    }
+
+
+    public void resumeGame()
+    {
+        paused = false;
+        Debug.Log("resume");
+    }
+
+
     void Update(){
-		if(!moved && transform.position != initPos){
-			moved=true;
-			GetComponent<ReadyScreen>().BeginGame();
-		}
-        InputTeclado();
-        transform.position = Vector3.MoveTowards(transform.position, targetPOS, speed * Time.deltaTime);
-		vetorDirecaoAtual = targetPOS - transform.position;
-		playerAnimation ();
-		if (transform.position == targetPOS) {
-			forceIdleAnim ();
-		}
-        hasHammer();
 
-		checkAltura();
+        if (!paused)
+        {
+            if (!moved && transform.position != initPos)
+            {
+                moved = true;
+                GetComponent<ReadyScreen>().BeginGame();
+            }
+            InputTeclado();
+            transform.position = Vector3.MoveTowards(transform.position, targetPOS, speed * Time.deltaTime);
+            vetorDirecaoAtual = targetPOS - transform.position;
+            playerAnimation();
+            if (transform.position == targetPOS)
+            {
+                forceIdleAnim();
+            }
+            hasHammer();
 
-        raycast();
+            checkAltura();
+
+            raycast();
+        }
+
+        
 	}
 
     void raycast()
