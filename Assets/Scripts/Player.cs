@@ -11,6 +11,7 @@ public class Player : GridObject {
     public Transform ladderA;
     public Transform ladderB;
 	public bool martelo = false, boia = false;
+    public bool moved;
     public float timeMartelo = 10f;
     public float timeLeftMartelo;
 	public int num_momentos; //numero de momentos existentes
@@ -21,8 +22,7 @@ public class Player : GridObject {
 	private GameObject scoreText;
 	private TileSpawner tileSpawner;
 	private MadeiraManager madeiraManager;
-	public bool moved;
-
+    private SoundManager soundManager;
 	private Vector3 initPos;
     private Vector3 sightStart, sightEndRU, sightEndLU, sightEndRD, sightEndLD;
     public bool spottedRU, spottedLU, spottedRD, spottedLD;
@@ -35,6 +35,7 @@ public class Player : GridObject {
 		scoreText = GameObject.FindGameObjectWithTag("ScoreText");
 		tileSpawner = GameObject.FindGameObjectWithTag("TileSpawner").GetComponent<TileSpawner>();
         madeiraManager = GameObject.FindGameObjectWithTag("MadeiraManager").GetComponent<MadeiraManager>();
+        soundManager = GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>();
     }
 
 
@@ -131,50 +132,59 @@ public class Player : GridObject {
 
 	public void criaEscada(Direction direcao) {
 		GameObject.Find ("ScoreManager").GetComponent<ScoreText> ().addOnStair ();
+        
 		switch (direcao) {
 		case Direction.RIGHT_UP:
 			if (existeEscada (Direction.RIGHT_UP)) {
-				//Debug.Log ("AconteceuRU");
-				return;
+                //Debug.Log ("AconteceuRU");
+                soundManager.setSoundMovPlayer();
+                return;
 			}
             if (transform.position.x < 4 && transform.position == targetPOS)
             {
                 Instantiate(ladderA, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
                 madeiraManager.delMadeira();
+                soundManager.setSoundMovPlayer();
             }
 
                 break;
 		case Direction.RIGHT_DOWN:
 			if (existeEscada (Direction.RIGHT_DOWN)) {
-				//Debug.Log ("AconteceuRD");
-				return;
+                //Debug.Log ("AconteceuRD");
+                soundManager.setSoundMovPlayer();
+                return;
 			}
             if (transform.position.x < 4 && transform.position == targetPOS)
             {
                 Instantiate(ladderB, transform.position - new Vector3(-1, 2, 0), Quaternion.identity);
                 madeiraManager.delMadeira();
+                soundManager.setSoundMovPlayer();
             }
 			break;
 		case Direction.LEFT_UP:
 			if (existeEscada (Direction.LEFT_UP)) {
-				//Debug.Log ("AconteceuLU");
-				return;
+                //Debug.Log ("AconteceuLU");
+                soundManager.setSoundMovPlayer();
+                return;
 			}
             if (transform.position.x > -4 && transform.position == targetPOS)
             {
                 Instantiate(ladderB, transform.position - new Vector3(1, 0, 0), Quaternion.identity);
                 madeiraManager.delMadeira();
+                soundManager.setSoundMovPlayer();
             }
 			break;
 		case Direction.LEFT_DOWN:
 			if (existeEscada (Direction.LEFT_DOWN)) {
-				//Debug.Log ("AconteceuLD");
-				return;
+                //Debug.Log ("AconteceuLD");
+                soundManager.setSoundMovPlayer();
+                return;
 			}
             if (transform.position.x > -4 && transform.position == targetPOS)
             {
                 Instantiate(ladderA, transform.position - new Vector3(1, 2, 0), Quaternion.identity);
                 madeiraManager.delMadeira();
+                soundManager.setSoundMovPlayer();
             }
 			break;
 		}

@@ -81,7 +81,7 @@ public class TileSpawner : MonoBehaviour
     public void setMomento(int valor)
     {
         last_momento = momento;
-        momento = 4;
+        momento = valor;
         if (last_momento != momento) { ativa_momento(momento); }
     }
 
