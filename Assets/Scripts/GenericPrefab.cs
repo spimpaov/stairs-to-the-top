@@ -113,18 +113,17 @@ public class GenericPrefab : MonoBehaviour {
 					break;
 				case SpawnableObject.SPIDER:
 					pos = calculaPos (pos_linha, pos_coluna);
-					//instantiateSpider (pos);
+					instantiateSpider (pos);
 					break;
                 case SpawnableObject.CUPIM:
                     pos = calculaPos(pos_linha, pos_coluna);
-                    //instantiateCupim(pos);
                     if (pos.x != 4) {
                         instantiateCupim(new Vector3 (pos.x + 0.8f, pos.y - 2, 0));
                     }
                     break;
 				case SpawnableObject.POWER_UP:
 					pos = calculaPos (pos_linha, pos_coluna);
-					instantiatePowerUp (new Vector3 (pos.x, pos.y - 2, 0));
+					instantiatePowerUp (new Vector3 (pos.x, pos.y -3, 0));
 					break;
 				}
 			}

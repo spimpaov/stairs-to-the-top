@@ -7,7 +7,7 @@ public class PowerUp : MonoBehaviour {
 
     public Transform sightStart, sightEndXY, sightEnd_XY, sightEndX_Y, sightEnd_X_Y;
 
-    private bool spottedXY = false, spotted_XY = false, spottedX_Y = false, spotted_X_Y = false;
+    public bool spottedXY = false, spotted_XY = false, spottedX_Y = false, spotted_X_Y = false;
     //private GameObject HUD;
     //private GameObject score;
     private GameObject player;
@@ -66,7 +66,7 @@ public class PowerUp : MonoBehaviour {
 			yield return new WaitForSeconds (1f);
 			text_sucesso.GetComponent<Text>().enabled = false;
 
-		destroyPowerUp();
-	
-	}
+        destroyPowerUp();
+
+    }
 }
