@@ -26,6 +26,7 @@ public class Player : GridObject {
 	private Vector3 initPos;
     private Vector3 sightStart, sightEndRU, sightEndLU, sightEndRD, sightEndLD;
     public bool spottedRU, spottedLU, spottedRD, spottedLD;
+    private bool playerJaTaDed = false;
 
     private void Start()
     {
@@ -190,7 +191,29 @@ public class Player : GridObject {
 		}
 	}
 
-	public void InputTeclado(){
+    // PARA TESTAR INPUT POR BOTAO
+    public void buttonRU()
+    {
+        criaEscada(Direction.RIGHT_UP);
+        move(Direction.RIGHT_UP);
+    }
+    public void buttonRD()
+    {
+        criaEscada(Direction.RIGHT_DOWN);
+        move(Direction.RIGHT_DOWN);
+    }
+    public void buttonLU()
+    {
+        criaEscada(Direction.LEFT_UP);
+        move(Direction.LEFT_UP);
+    }
+    public void buttonLD()
+    {
+        criaEscada(Direction.LEFT_DOWN);
+        move(Direction.LEFT_DOWN);
+    }
+
+    public void InputTeclado(){
 		
 		if(Input.GetKeyDown("f")){
 			criaEscada (Direction.RIGHT_UP);
@@ -267,7 +290,8 @@ public class Player : GridObject {
     private IEnumerator destroyPlayer()
     {
         scoreText.GetComponent<ScoreText>().setHighscore();
-		GameObject.Find("Transition_Mask").GetComponent<TransitionMask>().Bigger_transition();
+        if (!playerJaTaDed) GameObject.Find("Transition_Mask").GetComponent<TransitionMask>().Bigger_transition();
+        playerJaTaDed = true;
 		yield return new WaitForSeconds(1);
         SceneManager.LoadScene("GameOver");
     }

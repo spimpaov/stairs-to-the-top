@@ -29,7 +29,7 @@ public class TransitionMask : MonoBehaviour {
 		StartCoroutine(Smaller());
 	}
 	public void Bigger_transition(){
-		StartCoroutine(Bigger());
-	}
+            StartCoroutine(Bigger());
+    }
 
 }
