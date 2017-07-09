@@ -5,14 +5,23 @@ using UnityEngine.UI;
 public class ScoreText : MonoBehaviour {
 
 	public Text text;
-	public int score = 0, pontuacaoEscada = 10;
+    public int pontuacaoEscada, pontuacaoPowerUp;
 	public float tempo = 0.0f;
     public bool inGame;
 
+    private Player player;
+    private int score;
+
+    void Start()
+    {
+        if (inGame) player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        score = 0;
+    }
+
     void Update() {
 		showScore ();
-        if (inGame) {
-            addEachSecond();
+        if (inGame && player.moved) {
+            //addEachSecond();
         }
 	}
 
@@ -39,7 +48,7 @@ public class ScoreText : MonoBehaviour {
 		score += pontuacaoEscada;
 	}
 
-	public void addEachCoin() {
-		score += 15;
+	public void addOnPowerUp() {
+		score += pontuacaoPowerUp;
 	}
 }

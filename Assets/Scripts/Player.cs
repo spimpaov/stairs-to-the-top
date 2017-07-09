@@ -131,7 +131,7 @@ public class Player : GridObject {
 	}
 
 	public void criaEscada(Direction direcao) {
-		GameObject.Find ("ScoreManager").GetComponent<ScoreText> ().addOnStair ();
+		scoreText.GetComponent<ScoreText>().addOnStair ();
         
 		switch (direcao) {
 		case Direction.RIGHT_UP:
@@ -220,11 +220,16 @@ public class Player : GridObject {
 
         if (target.gameObject.tag == "Saw")
         {
-            if (martelo) target.GetComponent<Saw>().destroySaw();
-            else {
-				KillPlayer(PlayerKill.SERRA);
-				StartCoroutine(destroyPlayer());
-				}
+            if (martelo)
+            {
+                target.GetComponent<Saw>().destroySaw();
+                scoreText.GetComponent<ScoreText>().addOnPowerUp();
+            }
+            else
+            {
+                KillPlayer(PlayerKill.SERRA);
+                StartCoroutine(destroyPlayer());
+            }
         }
 
         if (target.gameObject.tag == "Laser")
@@ -245,7 +250,11 @@ public class Player : GridObject {
 
         if (target.gameObject.tag == "Spider")
         {
-            if (martelo) target.GetComponent<Spider>().destroySpiderByPlayer(transform.position.x>target.transform.position.x);
+            if (martelo)
+            {
+                target.GetComponent<Spider>().destroySpiderByPlayer(transform.position.x > target.transform.position.x);
+                scoreText.GetComponent<ScoreText>().addOnPowerUp();
+            }
             else StartCoroutine(destroyPlayer());
         }
     }
@@ -255,8 +264,7 @@ public class Player : GridObject {
         StartCoroutine(destroyPlayer());
     }
 
-	//Pedro: Alguem chamava essa destroy player? Pq ela era publica? 
-    public IEnumerator destroyPlayer()
+    private IEnumerator destroyPlayer()
     {
         scoreText.GetComponent<ScoreText>().setHighscore();
 		GameObject.Find("Transition_Mask").GetComponent<TransitionMask>().Bigger_transition();
