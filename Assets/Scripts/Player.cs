@@ -56,7 +56,7 @@ public class Player : GridObject {
 
     void Update(){
 
-        if (!paused)
+        if (!paused && !playerJaTaDed)
         {
             if (!moved && transform.position != initPos)
             {
@@ -289,9 +289,9 @@ public class Player : GridObject {
 
     private IEnumerator destroyPlayer()
     {
+        playerJaTaDed = true;
         scoreText.GetComponent<ScoreText>().setHighscore();
         if (!playerJaTaDed) GameObject.Find("Transition_Mask").GetComponent<TransitionMask>().Bigger_transition();
-        playerJaTaDed = true;
 		yield return new WaitForSeconds(1);
         SceneManager.LoadScene("GameOver");
     }
