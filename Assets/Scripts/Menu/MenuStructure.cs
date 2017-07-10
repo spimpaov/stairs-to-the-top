@@ -8,13 +8,14 @@ public class MenuStructure : MonoBehaviour {
 	[SerializeField] private List<GameObject> menuList;
 	private int actualMenu = 0;
 	[SerializeField] private float transitionSpeed;
+	[SerializeField] private Background myBG;
 
 	private IEnumerator TransitionLeft(){
 		RectTransform menuRT = menuList[actualMenu].GetComponent<RectTransform>();
 		Vector2 originalPosition = menuRT.anchoredPosition;
 		Vector2 targetPositionLeft = originalPosition - Vector2.right*1000;
 		Vector2 targetPositionRight = originalPosition + Vector2.right*1000;
-
+		myBG.Change();
 		while(menuRT.anchoredPosition != targetPositionLeft){
 			menuRT.anchoredPosition = Vector2.MoveTowards(menuRT.anchoredPosition,targetPositionLeft,transitionSpeed);
 			yield return new WaitForEndOfFrame();
@@ -30,6 +31,7 @@ public class MenuStructure : MonoBehaviour {
 		
 	}
 	private IEnumerator TransitionRight(){
+		myBG.Change();
 		RectTransform menuRT = menuList[actualMenu].GetComponent<RectTransform>();
 		Vector2 originalPosition = menuRT.anchoredPosition;
 		Vector2 targetPositionLeft = originalPosition - Vector2.right*1000;
