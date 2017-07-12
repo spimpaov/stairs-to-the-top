@@ -65,6 +65,8 @@ public class Spider : GridObject {
         }
         
         GetComponent<BoxCollider2D>().enabled = false;
+        GetComponentInChildren<Animator>().Play("spider-dead");
+        GetComponentInChildren<SpriteRenderer>().flipY = true;
         Destroy(this.gameObject,4f);
         GetComponent<Spider>().enabled = false;
     }
