@@ -8,6 +8,7 @@ public class Spider : GridObject {
     Player player;
 
 	void Start () {
+        GetComponentInChildren<SpriteRenderer>().color = GetColor(Random.Range(1,5));
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         targetPOS = transform.position;
         StartCoroutine(randomBehaviour());
@@ -17,7 +18,20 @@ public class Spider : GridObject {
     {
         transform.position = Vector3.MoveTowards(transform.position, targetPOS, speed * Time.deltaTime);
     }
-
+    private Color GetColor(int number){
+        switch(number){
+            case 1:
+                return Color.red;
+            case 2:
+                return Color.green;
+            case 3:
+                return Color.yellow;
+            case 4:
+                return Color.blue;
+            default:
+                return Color.white;
+        }
+    }
     IEnumerator randomBehaviour()
     {
         while (true)

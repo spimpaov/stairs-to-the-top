@@ -8,7 +8,7 @@ public class ReadyScreen : MonoBehaviour {
 	[SerializeField]private GameObject water;
 
 	private void Start(){
-		woodHud.SetActive(false);
+		//woodHud.SetActive(false);
 		water.SetActive(false);
 	}
 	private void ShowHUD(){
@@ -19,6 +19,6 @@ public class ReadyScreen : MonoBehaviour {
 	}
 	public void BeginGame(){
 		InitializeWater();
-		ShowHUD();
+		//ShowHUD();
 	}
 }

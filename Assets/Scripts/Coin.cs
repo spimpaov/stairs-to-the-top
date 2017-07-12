@@ -30,6 +30,7 @@ public class Coin : MonoBehaviour {
             transform.position = transform.position + Vector3.up*direction*speed*Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
+        
     }
     private IEnumerator UpState(){
         while(true){

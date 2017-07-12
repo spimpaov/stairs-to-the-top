@@ -13,6 +13,8 @@ public class PowerUp : MonoBehaviour {
     private GameObject player;
 	private GameObject text_sucesso;
 
+    [SerializeField] float speed,time;
+    private bool up;
 
     void Start()
     {
@@ -20,6 +22,9 @@ public class PowerUp : MonoBehaviour {
         //score = GameObject.FindGameObjectWithTag("Score");
         player = GameObject.FindGameObjectWithTag("Player");
 		text_sucesso = GameObject.FindGameObjectWithTag ("TextoPOColetado");
+
+        StartCoroutine( UpAndDown() );
+        StartCoroutine( UpState() );
     }
 
     void Update ()
@@ -62,11 +67,34 @@ public class PowerUp : MonoBehaviour {
     }
 
 	IEnumerator POColetado() {
-			text_sucesso.GetComponent<Text> ().enabled = true;
-			yield return new WaitForSeconds (1f);
-			text_sucesso.GetComponent<Text>().enabled = false;
+        GetComponent<Animator>().Play("power-up_activate");
+		yield return new WaitForSeconds (1f);
+        StartCoroutine( Smaller() );
 
-        destroyPowerUp();
+    }
 
+    private IEnumerator Smaller(){
+        while(transform.localScale.x > 0.05f){
+            transform.localScale = transform.localScale*0.9f;
+            yield return new WaitForEndOfFrame();
+        }
+        Destroy(this.gameObject);
+    }
+    private IEnumerator UpAndDown(){
+        float direction = 1;
+
+        while(true){
+            if(up){direction = 1;}
+            else{direction = -1;}
+            transform.position = transform.position + Vector3.up*direction*speed*Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        
+    }
+    private IEnumerator UpState(){
+        while(true){
+            yield return new WaitForSeconds(time);
+            up = !up;
+        }
     }
 }
