@@ -20,6 +20,11 @@ public class escada : MonoBehaviour
             Debug.Log("escada vs cupim");
             StartCoroutine(destroyStair());
         }
+        if (target.gameObject.tag == "Water")
+        {
+            Debug.Log("escada vs agua");
+            AguaStair();
+        }
     }
 
     IEnumerator destroyStair()
@@ -28,8 +33,13 @@ public class escada : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
         mySR.color = new Color (0.4f,0.4f,0.4f,1);
         yield return new WaitForSeconds(0.3f);
-        checaPlayerNaEscada();
+        transform.GetChild(0).gameObject.SetActive(true);
+        transform.GetChild(0).parent = null;
         Destroy(this.gameObject);
+    }
+    void AguaStair()
+    {
+        mySR.color = new Color (0.7f,0.7f,0.7f,1);
     }
 
     void checaPlayerNaEscada()
