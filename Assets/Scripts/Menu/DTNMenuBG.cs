@@ -17,20 +17,19 @@ public class DTNMenuBG : MonoBehaviour {
         if (sysHour >= 18)
         {
             //seta o fundo da noite
-            this.gameObject.GetComponent<SpriteRenderer>().sprite = diaBG;
+            this.gameObject.GetComponent<SpriteRenderer>().sprite = noiteBG;
+            Debug.Log("OI");
 
         }
         else if (sysHour >= 12)
         {
             //seta fundo da tarde
             this.gameObject.GetComponent<SpriteRenderer>().sprite = tardeBG;
-            this.gameObject.GetComponent<SpriteRenderer>().color = Color.yellow; //temporario
 
         }
         else // sysHour >= 0
         {
-            this.gameObject.GetComponent<SpriteRenderer>().sprite = noiteBG;
-            this.gameObject.GetComponent<SpriteRenderer>().color = Color.grey; //temporario
+            this.gameObject.GetComponent<SpriteRenderer>().sprite = diaBG;
         }
     }
 }

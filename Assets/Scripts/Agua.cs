@@ -52,4 +52,10 @@ public class Agua : MonoBehaviour {
         }
         this.transform.position += new Vector3(0, waterSpeed * Time.deltaTime, 0);
     }
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.gameObject.CompareTag("Saw")){
+            other.gameObject.GetComponent<Saw>().sawOnWater();
+        }
+    }
 }

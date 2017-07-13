@@ -2,7 +2,9 @@
 using UnityEngine.SceneManagement;
 using System.Collections;
 using UnityEngine.UI;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 public enum PlayerKill{
 	WATER,SERRA,ARANHA,LASER
