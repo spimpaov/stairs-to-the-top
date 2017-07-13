@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum PowerUpType{
+    MARTELO,
+    CHAVE,
+    INSETICIDA
+}
 public class PowerUp : MonoBehaviour {
 
     public Transform sightStart, sightEndXY, sightEnd_XY, sightEndX_Y, sightEnd_X_Y;
@@ -12,12 +17,15 @@ public class PowerUp : MonoBehaviour {
     //private GameObject score;
     private GameObject player;
 	private GameObject text_sucesso;
+    private PowerUpType type;
 
     [SerializeField] float speed,time;
     private bool up;
 
     void Start()
     {
+        type = GetRandomPowerUpType();
+        GetBoxLabel();
         //HUD = GameObject.FindGameObjectWithTag("HUD");
         //score = GameObject.FindGameObjectWithTag("Score");
         player = GameObject.FindGameObjectWithTag("Player");
@@ -32,12 +40,42 @@ public class PowerUp : MonoBehaviour {
         raycast();
         collectPowerUp();
 	}
+    private PowerUpType GetRandomPowerUpType(){
+        int randomNumber = Random.Range(0,3);
+        switch(randomNumber){
+            case 0:
+                return PowerUpType.MARTELO;
+            case 1:
+                return PowerUpType.CHAVE;
+            case 2:
+                return PowerUpType.INSETICIDA;
+        }
+        return PowerUpType.INSETICIDA;
+    }
 
     void destroyPowerUp()
     {
         Destroy(this.gameObject);
     }
-
+    private void GetBoxLabel(){
+        switch(type){
+                case PowerUpType.CHAVE:
+                    GameObject.Find("Chav").SetActive(true);
+                    GameObject.Find("Mart").SetActive(false);
+                    GameObject.Find("Inset").SetActive(false);
+                    break;
+                case PowerUpType.INSETICIDA:
+                    GameObject.Find("Chav").SetActive(false);
+                    GameObject.Find("Mart").SetActive(false);
+                    GameObject.Find("Inset").SetActive(true);
+                    break;
+                case PowerUpType.MARTELO:
+                    GameObject.Find("Chav").SetActive(false);
+                    GameObject.Find("Mart").SetActive(true);
+                    GameObject.Find("Inset").SetActive(false);
+                    break;
+            }
+    }
     void raycast()
     {
         Debug.DrawLine(sightStart.position, sightEndXY.position, Color.magenta);
@@ -61,8 +99,17 @@ public class PowerUp : MonoBehaviour {
             temp.transform.localPosition = new Vector3(0, score.transform.position.y- relacaoScoreToPowerUpText, 0);
             temp.transform.SetParent(HUD.transform, false);
             */
-            player.GetComponent<Player>().setHammer();
-            
+            switch(type){
+                case PowerUpType.CHAVE:
+                    player.GetComponent<Player>().setHammer();
+                    break;
+                case PowerUpType.INSETICIDA:
+                    player.GetComponent<Player>().setHammer();
+                    break;
+                case PowerUpType.MARTELO:
+                    player.GetComponent<Player>().setHammer();
+                    break;
+            }
         }
     }
 
