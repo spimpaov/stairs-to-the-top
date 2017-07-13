@@ -60,7 +60,7 @@ public class TileSpawner : MonoBehaviour
     }
     
 	TileData geraTileNovoAleatoriamente() {
-        Debug.Log("TILE RANDOM");
+        //Debug.Log("TILE RANDOM");
 		TileData tile = tile_random;
 		for(int pos_linha = 0; pos_linha < tile.matriz.Count; pos_linha++){
 			TileData.linha linha = tile.matriz[pos_linha];
@@ -153,7 +153,7 @@ public class TileSpawner : MonoBehaviour
 
 	TileData geraTilePronto() {
 		TileData randomTile = null;
-        Debug.Log("TILE PRONTO");
+        //Debug.Log("TILE PRONTO");
 		switch (momento){
 		case 1:
 			randomTile = tiles_momento1 [Random.Range (0, tiles_momento1.Count)];
@@ -168,7 +168,7 @@ public class TileSpawner : MonoBehaviour
 			randomTile = tiles_momento4[Random.Range(0, tiles_momento4.Count)];
 			break;
 		}
-        Debug.Log(" * tile escolhido: " + randomTile);
+        //Debug.Log(" * tile escolhido: " + randomTile);
         return randomTile;
 	}
 

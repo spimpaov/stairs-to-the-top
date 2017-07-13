@@ -41,8 +41,12 @@ public class Player : GridObject {
     [Header("Player Ghost Prefab")]
     [SerializeField] private GameObject pighost;
 
+    [Header("Inseticida Power-Up")]
+    [SerializeField] private GameObject myPS;
+
     private void Start()
     {
+        myPS.SetActive(false);
         powerUpSlider = GameObject.Find("POWER-UP_SLIDER");
 		moved = false;
 		initPos = this.transform.position;
@@ -310,12 +314,14 @@ public class Player : GridObject {
                 else
                 {
                     KillPlayer(PlayerKill.ARANHA);
+                    
                     StartCoroutine(destroyPlayer());
                 }
             }
             else
             {
                 KillPlayer(PlayerKill.ARANHA);
+                target.gameObject.GetComponent<Spider>().SpiderAtePlayer();
                 StartCoroutine(destroyPlayer());
             }
         }
@@ -380,35 +386,34 @@ public class Player : GridObject {
 	}
 
 	void playerAnimation(){
-        if (hasPowerUp && powerUpType == PowerUpType.MARTELO)
-            {
-                this.gameObject.GetComponent<Animator>().SetBool("hammer", true);
-            }
-            else
-            {
-                this.gameObject.GetComponent<Animator>().SetBool("hammer", false);
-            }
-            if (vetorDirecaoAtual.x < 0)
-            {
-                forceIdleAnim();
-                this.gameObject.GetComponent<Animator>().SetBool("move", true);
-                this.gameObject.GetComponent<Animator>().SetBool("right", false);
-            }
-            else if (vetorDirecaoAtual.x > 0)
-            {
-                forceIdleAnim();
-                this.gameObject.GetComponent<Animator>().SetBool("move", true);
-                this.gameObject.GetComponent<Animator>().SetBool("right", true);
-            }
-            else if (vetorDirecaoAtual.magnitude == 0)
-            {
-                forceIdleAnim();
-            }
-        else if (hasPowerUp && powerUpType == PowerUpType.INSETICIDA)
-        {
-            //animação do inseticida
+        Debug.Log(powerUpType);
+        if (hasPowerUp && powerUpType == PowerUpType.MARTELO){
+            this.gameObject.GetComponent<Animator>().SetBool("hammer", true);
+        }else{
+            this.gameObject.GetComponent<Animator>().SetBool("hammer", false);
         }
-        else if (hasPowerUp && powerUpType == PowerUpType.CHAVE)
+        if (vetorDirecaoAtual.x < 0)
+        {
+            forceIdleAnim();
+            this.gameObject.GetComponent<Animator>().SetBool("move", true);
+            this.gameObject.GetComponent<Animator>().SetBool("right", false);
+        }
+        else if (vetorDirecaoAtual.x > 0)
+        {
+            forceIdleAnim();
+            this.gameObject.GetComponent<Animator>().SetBool("move", true);
+            this.gameObject.GetComponent<Animator>().SetBool("right", true);
+        }
+        else if (vetorDirecaoAtual.magnitude == 0)
+        {
+            forceIdleAnim();
+        }
+        if (hasPowerUp && powerUpType == PowerUpType.INSETICIDA)
+        {
+            myPS.SetActive(true);
+            Debug.Log("OI_INSETI");
+        }
+        if (hasPowerUp && powerUpType == PowerUpType.CHAVE)
         {
             //animação da chave de porca
         }
@@ -444,6 +449,8 @@ public class Player : GridObject {
             timeLeftPowerUp -= Time.deltaTime; //-1 por segundo e nao por frame
             if (timeLeftPowerUp < 0) {
                 hasPowerUp = false; timeLeftPowerUp = timePowerUp;
+                Debug.Log("OI_CHECK");
+                myPS.SetActive(false);
             }
         }
     }

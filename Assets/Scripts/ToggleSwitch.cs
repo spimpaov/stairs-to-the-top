@@ -16,7 +16,7 @@ public class ToggleSwitch : MonoBehaviour {
     {
         myAnimator.Play("switch_activate");
         activated = true;
-        Debug.Log("LASER: " + laser);
+        //Debug.Log("LASER: " + laser);
         laser.Desativar();
     }
 

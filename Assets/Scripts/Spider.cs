@@ -8,6 +8,7 @@ public class Spider : GridObject {
     private Player player;
     private GameObject arrow;
     [SerializeField] private float arrowDistance;
+    public bool atePlayer = false;
 
 	void Start () {
         arrow = transform.GetChild(1).gameObject;
@@ -19,7 +20,7 @@ public class Spider : GridObject {
 
     void Update()
     {
-        transform.position = Vector3.MoveTowards(transform.position, targetPOS, speed * Time.deltaTime);
+        if(!atePlayer) transform.position = Vector3.MoveTowards(transform.position, targetPOS, speed * Time.deltaTime);
     }
     private Color GetColor(int number){
         switch(number){
@@ -115,5 +116,12 @@ public class Spider : GridObject {
         GetComponentInChildren<SpriteRenderer>().flipY = true;
         Destroy(this.gameObject,4f);
         GetComponent<Spider>().enabled = false;
+    }
+    public void SpiderAtePlayer()
+    {
+        atePlayer = true;
+        Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        StopCoroutine(randomBehaviour());
+        GetComponentInChildren<Animator>().Play("spider-eating");
     }
 }
