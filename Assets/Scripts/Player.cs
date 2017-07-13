@@ -35,6 +35,8 @@ public class Player : GridObject {
     [SerializeField] private float timeFromSpiderKilling;
     [SerializeField] private float timeFromSawDestroying;
 
+    [Header("Player Ghost Prefab")]
+    [SerializeField] private GameObject pighost;
 
     private void Start()
     {
@@ -306,6 +308,8 @@ public class Player : GridObject {
 
     private IEnumerator destroyPlayer()
     {
+        Instantiate(pighost,transform.position,Quaternion.identity);
+        GetComponent<SpriteRenderer>().enabled = false;
         playerJaTaDed = true;
         scoreText.GetComponent<ScoreText>().setHighscore();
         if (!playerJaTaDed) GameObject.Find("Transition_Mask").GetComponent<TransitionMask>().Bigger_transition();
