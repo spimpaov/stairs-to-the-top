@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine.UI;
+using UnityEditor;
 
 public enum PlayerKill{
 	WATER,SERRA,ARANHA,LASER
@@ -28,8 +30,15 @@ public class Player : GridObject {
     public bool spottedRU, spottedLU, spottedRD, spottedLD;
     private bool playerJaTaDed = false;
 
+    [Header("Power-Up Slider")]
+    [SerializeField] private GameObject powerUpSlider;
+    [SerializeField] private float timeFromSpiderKilling;
+    [SerializeField] private float timeFromSawDestroying;
+
+
     private void Start()
     {
+        powerUpSlider = GameObject.Find("POWER-UP_SLIDER");
 		moved = false;
 		initPos = this.transform.position;
         timeLeftMartelo = timeMartelo;
@@ -76,6 +85,9 @@ public class Player : GridObject {
             checkAltura();
 
             raycast();
+
+            ShowPowerUpSlider();
+            ShowRemaingTimeInSlider();
         }
 
         
@@ -247,6 +259,7 @@ public class Player : GridObject {
             {
                 target.GetComponent<Saw>().destroySaw();
                 scoreText.GetComponent<ScoreText>().addOnPowerUp();
+                timeLeftMartelo += timeFromSawDestroying;
             }
             else
             {
@@ -277,8 +290,12 @@ public class Player : GridObject {
             {
                 target.GetComponent<Spider>().destroySpiderByPlayer(transform.position.x > target.transform.position.x);
                 scoreText.GetComponent<ScoreText>().addOnPowerUp();
+                timeLeftMartelo += timeFromSpiderKilling;
             }
             else StartCoroutine(destroyPlayer());
+        }
+        if(timeLeftMartelo > timeMartelo){
+            timeLeftMartelo = timeMartelo;
         }
     }
 
@@ -363,7 +380,18 @@ public class Player : GridObject {
         martelo = true;
         timeLeftMartelo = timeMartelo;
     }
- 		
+ 	private void ShowPowerUpSlider(){
+         if(martelo == true){
+             powerUpSlider.SetActive(true);
+         }else{
+             powerUpSlider.SetActive(false);
+         }
+    }
+    private void ShowRemaingTimeInSlider(){
+        if( powerUpSlider.activeSelf == true){
+            powerUpSlider.GetComponent<Slider>().value = 1-(timeLeftMartelo/timeMartelo);
+        }
+    }
     void hasHammer()
     {
         if(martelo)
