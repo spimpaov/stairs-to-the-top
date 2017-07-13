@@ -4,10 +4,13 @@ using System.Collections.Generic;
 
 public class Spider : GridObject {
 
-    float timeBetweenMovements = 1.0f;
-    Player player;
+    private float timeBetweenMovements = 1.0f;
+    private Player player;
+    private GameObject arrow;
+    [SerializeField] private float arrowDistance;
 
 	void Start () {
+        arrow = transform.GetChild(1).gameObject;
         GetComponentInChildren<SpriteRenderer>().color = GetColor(Random.Range(1,5));
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         targetPOS = transform.position;
@@ -36,11 +39,40 @@ public class Spider : GridObject {
     {
         while (true)
         {
-            move(getPlayerGeneralDirection());
+            Direction dir = getPlayerGeneralDirection();
+            ChangeArrowDirection(dir);
+
             yield return new WaitForSeconds(timeBetweenMovements);
+
+            move(dir);
         }
     }
+    void ChangeArrowDirection(Direction dir){
+        SpriteRenderer arrowSR = arrow.GetComponent<SpriteRenderer>();
 
+        switch(dir){
+            case Direction.LEFT_DOWN:
+                arrowSR.flipX = false;
+                arrowSR.flipY = false;
+                arrow.transform.localPosition = (Vector3.down+Vector3.left).normalized*arrowDistance;
+                break;
+            case Direction.LEFT_UP:
+                arrowSR.flipX = false;
+                arrowSR.flipY = true;
+                arrow.transform.localPosition = (Vector3.up+Vector3.left).normalized*arrowDistance;
+                break;
+            case Direction.RIGHT_DOWN:
+                arrowSR.flipX = true;
+                arrowSR.flipY = false;
+                arrow.transform.localPosition = (Vector3.down+Vector3.right).normalized*arrowDistance;
+                break;
+            case Direction.RIGHT_UP:
+                arrowSR.flipX = true;
+                arrowSR.flipY = true;
+                arrow.transform.localPosition = (Vector3.up+Vector3.right).normalized*arrowDistance;
+                break;
+        }
+    }
     Direction getPlayerGeneralDirection()
     {
         List<Direction> possibleDirections = new List<Direction>();
