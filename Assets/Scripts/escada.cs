@@ -17,12 +17,12 @@ public class escada : MonoBehaviour
     {
         if (target.gameObject.tag == "Cupim")
         {
-            Debug.Log("escada vs cupim");
+            //Debug.Log("escada vs cupim");
             StartCoroutine(destroyStair());
         }
         if (target.gameObject.tag == "Water")
         {
-            Debug.Log("escada vs agua");
+            //Debug.Log("escada vs agua");
             AguaStair();
         }
     }

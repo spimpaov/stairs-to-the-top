@@ -12,14 +12,15 @@ public class Player : GridObject {
 	public Transform target;
     public Transform ladderA;
     public Transform ladderB;
-	public bool martelo = false, boia = false;
+    public bool hasPowerUp = false;
     public bool moved;
-    public float timeMartelo = 10f;
-    public float timeLeftMartelo;
+    public float timePowerUp = 10f;
+    public float timeLeftPowerUp;
 	public int num_momentos; //numero de momentos existentes
 	public float alt_momento; //define a altura de um momento (único para todos os momentos)
     
     private bool paused = false;
+    private PowerUpType powerUpType;
     private Vector3 vetorDirecaoAtual = new Vector3(0,0,0);
 	private GameObject scoreText;
 	private TileSpawner tileSpawner;
@@ -43,7 +44,7 @@ public class Player : GridObject {
         powerUpSlider = GameObject.Find("POWER-UP_SLIDER");
 		moved = false;
 		initPos = this.transform.position;
-        timeLeftMartelo = timeMartelo;
+        timeLeftPowerUp = timePowerUp;
 		scoreText = GameObject.FindGameObjectWithTag("ScoreText");
 		tileSpawner = GameObject.FindGameObjectWithTag("TileSpawner").GetComponent<TileSpawner>();
         madeiraManager = GameObject.FindGameObjectWithTag("MadeiraManager").GetComponent<MadeiraManager>();
@@ -82,7 +83,7 @@ public class Player : GridObject {
             {
                 forceIdleAnim();
             }
-            hasHammer();
+            checkPowerUp();
 
             checkAltura();
 
@@ -257,11 +258,20 @@ public class Player : GridObject {
 
         if (target.gameObject.tag == "Saw")
         {
-            if (martelo)
+            if (hasPowerUp)
             {
-                target.GetComponent<Saw>().destroySaw();
-                scoreText.GetComponent<ScoreText>().addOnPowerUp();
-                timeLeftMartelo += timeFromSawDestroying;
+                if (powerUpType == PowerUpType.MARTELO || powerUpType == PowerUpType.CHAVE)
+                {
+                    target.GetComponent<Saw>().destroySaw();
+                    scoreText.GetComponent<ScoreText>().addOnPowerUp();
+                    timeLeftPowerUp += timeFromSawDestroying;
+                }
+                else
+                {
+                    KillPlayer(PlayerKill.SERRA);
+                    StartCoroutine(destroyPlayer());
+                }
+                
             }
             else
             {
@@ -282,22 +292,33 @@ public class Player : GridObject {
 
         if (target.gameObject.tag == "Water")
         {
-            if (boia) { ; }
-            else StartCoroutine(destroyPlayer());
+            StartCoroutine(destroyPlayer());
         }
 
         if (target.gameObject.tag == "Spider")
         {
-            if (martelo)
+            if (hasPowerUp)
             {
-                target.GetComponent<Spider>().destroySpiderByPlayer(transform.position.x > target.transform.position.x);
-                scoreText.GetComponent<ScoreText>().addOnPowerUp();
-                timeLeftMartelo += timeFromSpiderKilling;
+                if (powerUpType == PowerUpType.MARTELO || powerUpType == PowerUpType.INSETICIDA)
+                {
+                    target.GetComponent<Spider>().destroySpiderByPlayer(transform.position.x > target.transform.position.x);
+                    scoreText.GetComponent<ScoreText>().addOnPowerUp();
+                    timeLeftPowerUp += timeFromSpiderKilling;
+                }
+                else
+                {
+                    KillPlayer(PlayerKill.ARANHA);
+                    StartCoroutine(destroyPlayer());
+                }
             }
-            else StartCoroutine(destroyPlayer());
+            else
+            {
+                KillPlayer(PlayerKill.ARANHA);
+                StartCoroutine(destroyPlayer());
+            }
         }
-        if(timeLeftMartelo > timeMartelo){
-            timeLeftMartelo = timeMartelo;
+        if(timeLeftPowerUp > timePowerUp){
+            timeLeftPowerUp = timePowerUp;
         }
     }
 
@@ -357,35 +378,53 @@ public class Player : GridObject {
 	}
 
 	void playerAnimation(){
-		if(martelo){
-			this.gameObject.GetComponent<Animator> ().SetBool ("hammer",true);
-		}else{
-			this.gameObject.GetComponent<Animator> ().SetBool ("hammer",false);
-		}
-		if (vetorDirecaoAtual.x < 0) {
-			forceIdleAnim ();
-			this.gameObject.GetComponent<Animator> ().SetBool ("move",true);
-			this.gameObject.GetComponent<Animator> ().SetBool ("right",false);
-		}else if (vetorDirecaoAtual.x > 0) {
-			forceIdleAnim ();
-			this.gameObject.GetComponent<Animator> ().SetBool ("move",true);
-			this.gameObject.GetComponent<Animator> ().SetBool ("right",true);
-		}else if(vetorDirecaoAtual.magnitude == 0){
-			forceIdleAnim ();
-		}
+        if (hasPowerUp && powerUpType == PowerUpType.MARTELO)
+            {
+                this.gameObject.GetComponent<Animator>().SetBool("hammer", true);
+            }
+            else
+            {
+                this.gameObject.GetComponent<Animator>().SetBool("hammer", false);
+            }
+            if (vetorDirecaoAtual.x < 0)
+            {
+                forceIdleAnim();
+                this.gameObject.GetComponent<Animator>().SetBool("move", true);
+                this.gameObject.GetComponent<Animator>().SetBool("right", false);
+            }
+            else if (vetorDirecaoAtual.x > 0)
+            {
+                forceIdleAnim();
+                this.gameObject.GetComponent<Animator>().SetBool("move", true);
+                this.gameObject.GetComponent<Animator>().SetBool("right", true);
+            }
+            else if (vetorDirecaoAtual.magnitude == 0)
+            {
+                forceIdleAnim();
+            }
+        else if (hasPowerUp && powerUpType == PowerUpType.INSETICIDA)
+        {
+            //animação do inseticida
+        }
+        else if (hasPowerUp && powerUpType == PowerUpType.CHAVE)
+        {
+            //animação da chave de porca
+        }
 	}
 
 	void forceIdleAnim(){
 		transform.gameObject.GetComponent<Animator> ().SetBool ("move", false);
 	}	
 
-    public void setHammer()
+    public void setPowerUp(PowerUpType PUType)
     {
-        martelo = true;
-        timeLeftMartelo = timeMartelo;
+        hasPowerUp = true;
+        powerUpType = PUType;
+        Debug.Log("PUType = " + powerUpType);
+        timeLeftPowerUp = timePowerUp;
     }
  	private void ShowPowerUpSlider(){
-         if(martelo == true){
+         if(hasPowerUp == true){
              powerUpSlider.SetActive(true);
          }else{
              powerUpSlider.SetActive(false);
@@ -393,16 +432,16 @@ public class Player : GridObject {
     }
     private void ShowRemaingTimeInSlider(){
         if( powerUpSlider.activeSelf == true){
-            powerUpSlider.GetComponent<Slider>().value = 1-(timeLeftMartelo/timeMartelo);
+            powerUpSlider.GetComponent<Slider>().value = 1-(timeLeftPowerUp/timePowerUp);
         }
     }
-    void hasHammer()
+    void checkPowerUp()
     {
-        if(martelo)
+        if(hasPowerUp)
         {
-            timeLeftMartelo -= Time.deltaTime; //-1 por segundo e nao por frame
-            if (timeLeftMartelo < 0) {
-                martelo = false; timeLeftMartelo = timeMartelo;
+            timeLeftPowerUp -= Time.deltaTime; //-1 por segundo e nao por frame
+            if (timeLeftPowerUp < 0) {
+                hasPowerUp = false; timeLeftPowerUp = timePowerUp;
             }
         }
     }

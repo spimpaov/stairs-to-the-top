@@ -101,13 +101,13 @@ public class PowerUp : MonoBehaviour {
             */
             switch(type){
                 case PowerUpType.CHAVE:
-                    player.GetComponent<Player>().setHammer();
+                    player.GetComponent<Player>().setPowerUp(PowerUpType.CHAVE);
                     break;
                 case PowerUpType.INSETICIDA:
-                    player.GetComponent<Player>().setHammer();
+                    player.GetComponent<Player>().setPowerUp(PowerUpType.INSETICIDA);
                     break;
                 case PowerUpType.MARTELO:
-                    player.GetComponent<Player>().setHammer();
+                    player.GetComponent<Player>().setPowerUp(PowerUpType.MARTELO);
                     break;
             }
         }
