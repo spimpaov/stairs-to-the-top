@@ -222,8 +222,11 @@ public class Player : GridObject {
     }
     public void buttonRD()
     {
+        if (this.transform.position.y != 0)
+        {
         criaEscada(Direction.RIGHT_DOWN);
         move(Direction.RIGHT_DOWN);
+        }
     }
     public void buttonLU()
     {
@@ -232,8 +235,11 @@ public class Player : GridObject {
     }
     public void buttonLD()
     {
+        if (this.transform.position.y != 0)
+        {
         criaEscada(Direction.LEFT_DOWN);
         move(Direction.LEFT_DOWN);
+        }
     }
 
     public void InputTeclado(){
@@ -242,7 +248,7 @@ public class Player : GridObject {
 			criaEscada (Direction.RIGHT_UP);
             move(Direction.RIGHT_UP);
 		}
-		if (Input.GetKeyDown ("c")) {
+		if (this.transform.position.y != 0 && Input.GetKeyDown ("c")) {
 			criaEscada (Direction.RIGHT_DOWN);
 			move (Direction.RIGHT_DOWN);
 		}
@@ -250,7 +256,7 @@ public class Player : GridObject {
 			criaEscada (Direction.LEFT_UP);
 			move (Direction.LEFT_UP);
 		}
-		if (Input.GetKeyDown ("x")) {
+		if (this.transform.position.y != 0 && Input.GetKeyDown ("x")) {
 			criaEscada (Direction.LEFT_DOWN);
 			move (Direction.LEFT_DOWN);
 		}
@@ -261,6 +267,7 @@ public class Player : GridObject {
         if (target.gameObject.tag == "Madeira")
         {
             madeiraManager.addMadeira();
+            soundManager.setSoundColetaMadeira();
             target.GetComponent<Coin>().destroyCoin();
         }
 
@@ -295,6 +302,7 @@ public class Player : GridObject {
 
         if (target.gameObject.tag == "ToggleSwitch")
         {
+            soundManager.setSoundAtivaSwitch();
             target.GetComponent<ToggleSwitch>().activateToggleSwitch();
         }
 
@@ -339,11 +347,12 @@ public class Player : GridObject {
 
     private IEnumerator destroyPlayer()
     {
-        Instantiate(pighost,transform.position,Quaternion.identity);
-        GetComponent<SpriteRenderer>().enabled = false;
+        if (!playerJaTaDed) Instantiate(pighost,transform.position,Quaternion.identity);
+        soundManager.setSoundMortePlayer();
         playerJaTaDed = true;
+        GetComponent<SpriteRenderer>().enabled = false;
         scoreText.GetComponent<ScoreText>().setHighscore();
-        if (!playerJaTaDed) GameObject.Find("Transition_Mask").GetComponent<TransitionMask>().Bigger_transition();
+        //if (!playerJaTaDed) GameObject.Find("Transition_Mask").GetComponent<TransitionMask>().Bigger_transition();
 		yield return new WaitForSeconds(1);
         SceneManager.LoadScene("GameOver");
     }
@@ -428,6 +437,7 @@ public class Player : GridObject {
     public void setPowerUp(PowerUpType PUType)
     {
         hasPowerUp = true;
+        soundManager.setSoundPegaPowerUp();
         powerUpType = PUType;
         Debug.Log("PUType = " + powerUpType);
         timeLeftPowerUp = timePowerUp;

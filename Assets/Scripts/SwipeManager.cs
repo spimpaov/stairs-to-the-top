@@ -48,7 +48,9 @@ public class SwipeManager : MonoBehaviour
 						player.criaEscada (Direction.RIGHT_UP);
 						player.move (Direction.RIGHT_UP);
                     }
-                    else if (swipeType == Direction.RIGHT_DOWN){
+
+                    else if (swipeType == Direction.RIGHT_DOWN && player.transform.position.y != 0)
+                    {
 						player.criaEscada (Direction.RIGHT_DOWN);
 						player.move (Direction.RIGHT_DOWN);
                     }
@@ -56,7 +58,7 @@ public class SwipeManager : MonoBehaviour
 						player.criaEscada (Direction.LEFT_UP);
 						player.move (Direction.LEFT_UP);
                     }
-                    else if (swipeType == Direction.LEFT_DOWN){
+                    else if (swipeType == Direction.LEFT_DOWN && player.transform.position.y != 0){
 						player.criaEscada (Direction.LEFT_DOWN);
 						player.move (Direction.LEFT_DOWN);
                     }
