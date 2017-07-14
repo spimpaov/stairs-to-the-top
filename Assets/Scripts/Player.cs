@@ -386,7 +386,6 @@ public class Player : GridObject {
 	}
 
 	void playerAnimation(){
-        Debug.Log(powerUpType);
         if (hasPowerUp && powerUpType == PowerUpType.MARTELO){
             this.gameObject.GetComponent<Animator>().SetBool("hammer", true);
         }else{
@@ -411,11 +410,12 @@ public class Player : GridObject {
         if (hasPowerUp && powerUpType == PowerUpType.INSETICIDA)
         {
             myPS.SetActive(true);
-            Debug.Log("OI_INSETI");
         }
         if (hasPowerUp && powerUpType == PowerUpType.CHAVE)
         {
-            //animação da chave de porca
+            this.gameObject.GetComponent<Animator>().SetBool("chave", true);
+        }else{
+            this.gameObject.GetComponent<Animator>().SetBool("chave", false);
         }
 	}
 
