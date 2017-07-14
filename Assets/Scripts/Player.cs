@@ -33,6 +33,8 @@ public class Player : GridObject {
     public bool spottedRU, spottedLU, spottedRD, spottedLD;
     private bool playerJaTaDed = false;
 
+    private bool blinked;
+
     [Header("Power-Up Slider")]
     [SerializeField] private GameObject powerUpSlider;
     [SerializeField] private float timeFromSpiderKilling;
@@ -446,12 +448,36 @@ public class Player : GridObject {
     {
         if(hasPowerUp)
         {
-            timeLeftPowerUp -= Time.deltaTime; //-1 por segundo e nao por frame
-            if (timeLeftPowerUp < 0) {
-                hasPowerUp = false; timeLeftPowerUp = timePowerUp;
-                Debug.Log("OI_CHECK");
-                myPS.SetActive(false);
+            timeLeftPowerUp -= Time.deltaTime;
+            if(!blinked && timeLeftPowerUp < 3f){
+                StartCoroutine( BlinkWhenPowerUpEnding() );
             }
         }
+    }
+    private IEnumerator BlinkWhenPowerUpEnding(){
+        blinked = true;
+        SpriteRenderer mySR = GetComponent<SpriteRenderer>();
+        for(int i = 0;i<4;i++){
+            mySR.color = Color.green;
+            yield return new WaitForSeconds(0.2f);
+            mySR.color = Color.white;
+            yield return new WaitForSeconds(0.2f);
+        }
+        for(int i = 0;i<4;i++){
+            mySR.color = Color.yellow;
+            yield return new WaitForSeconds(0.1f);
+            mySR.color = Color.white;
+            yield return new WaitForSeconds(0.1f);
+        }
+        for(int i = 0;i<8;i++){
+            mySR.color = Color.red;
+            yield return new WaitForSeconds(0.05f);
+            mySR.color = Color.white;
+            yield return new WaitForSeconds(0.05f);
+        }
+        hasPowerUp = false; 
+        timeLeftPowerUp = timePowerUp;
+        myPS.SetActive(false);
+        blinked = false;
     }
 }
