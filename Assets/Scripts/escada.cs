@@ -17,7 +17,7 @@ public class escada : MonoBehaviour
     {
         if (target.gameObject.tag == "Cupim")
         {
-            //Debug.Log("escada vs cupim");
+            Debug.Log("escada vs cupim");
             StartCoroutine(destroyStair());
         }
         if (target.gameObject.tag == "Water")
@@ -35,6 +35,7 @@ public class escada : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
         transform.GetChild(0).gameObject.SetActive(true);
         transform.GetChild(0).parent = null;
+        checaPlayerNaEscada();
         Destroy(this.gameObject);
     }
     void AguaStair()
