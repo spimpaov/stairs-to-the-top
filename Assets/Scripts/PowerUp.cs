@@ -17,6 +17,7 @@ public class PowerUp : MonoBehaviour {
     //private GameObject score;
     private GameObject player;
     private PowerUpType type;
+    private bool jaPegouPO = false;
 
     [SerializeField] float speed,time;
     private bool up;
@@ -89,8 +90,9 @@ public class PowerUp : MonoBehaviour {
 
     void collectPowerUp()
     {
-        if(spottedXY && spottedX_Y && spotted_XY && spotted_X_Y)
+        if(spottedXY && spottedX_Y && spotted_XY && spotted_X_Y && !jaPegouPO)
         {
+            jaPegouPO = true;
 			StartCoroutine (POColetado());
             /*
             GameObject temp = Instantiate(powerUpColetado.gameObject);

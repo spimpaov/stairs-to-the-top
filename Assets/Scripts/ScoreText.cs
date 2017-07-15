@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class ScoreText : MonoBehaviour {
 
 	public Text text;
-    public int pontuacaoEscada, pontuacaoPowerUp;
+    public int pontuacaoEscada, pontuacaoPowerUp, pontuacaoMadeira;
 	public float tempo = 0.0f;
     public bool inGame;
 
@@ -51,4 +51,9 @@ public class ScoreText : MonoBehaviour {
 	public void addOnPowerUp() {
 		score += pontuacaoPowerUp;
 	}
+
+    public void addOnMadeira()
+    {
+        score += pontuacaoMadeira;
+    }
 }

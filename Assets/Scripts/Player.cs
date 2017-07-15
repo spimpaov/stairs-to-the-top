@@ -23,18 +23,16 @@ public class Player : GridObject {
 
     private Coroutine blink_corroutine = null;
     private bool paused = false;
-    private bool somJaTocou = false;
     private PowerUpType powerUpType;
     private Vector3 vetorDirecaoAtual = new Vector3(0,0,0);
 	private GameObject scoreText;
 	private TileSpawner tileSpawner;
-	private MadeiraManager madeiraManager;
+	//private MadeiraManager madeiraManager;
     private SoundManager soundManager;
 	private Vector3 initPos;
     private Vector3 sightStart, sightEndRU, sightEndLU, sightEndRD, sightEndLD;
     public bool spottedRU, spottedLU, spottedRD, spottedLD;
     private bool playerJaTaDed = false;
-
     private bool blinked;
 
     [Header("Power-Up Slider")]
@@ -57,7 +55,7 @@ public class Player : GridObject {
         timeLeftPowerUp = timePowerUp;
 		scoreText = GameObject.FindGameObjectWithTag("ScoreText");
 		tileSpawner = GameObject.FindGameObjectWithTag("TileSpawner").GetComponent<TileSpawner>();
-        madeiraManager = GameObject.FindGameObjectWithTag("MadeiraManager").GetComponent<MadeiraManager>();
+        //madeiraManager = GameObject.FindGameObjectWithTag("MadeiraManager").GetComponent<MadeiraManager>();
         soundManager = GameObject.FindGameObjectWithTag("SoundManager").GetComponent<SoundManager>();
     }
 
@@ -169,7 +167,7 @@ public class Player : GridObject {
             if (transform.position.x < 4 && transform.position == targetPOS)
             {
                 Instantiate(ladderA, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
-                madeiraManager.delMadeira();
+                //madeiraManager.delMadeira();
                 soundManager.setSoundMovPlayer();
             }
 
@@ -183,7 +181,7 @@ public class Player : GridObject {
             if (transform.position.x < 4 && transform.position == targetPOS)
             {
                 Instantiate(ladderB, transform.position - new Vector3(-1, 2, 0), Quaternion.identity);
-                madeiraManager.delMadeira();
+                //madeiraManager.delMadeira();
                 soundManager.setSoundMovPlayer();
             }
 			break;
@@ -196,7 +194,7 @@ public class Player : GridObject {
             if (transform.position.x > -4 && transform.position == targetPOS)
             {
                 Instantiate(ladderB, transform.position - new Vector3(1, 0, 0), Quaternion.identity);
-                madeiraManager.delMadeira();
+                //madeiraManager.delMadeira();
                 soundManager.setSoundMovPlayer();
             }
 			break;
@@ -209,7 +207,7 @@ public class Player : GridObject {
             if (transform.position.x > -4 && transform.position == targetPOS)
             {
                 Instantiate(ladderA, transform.position - new Vector3(1, 2, 0), Quaternion.identity);
-                madeiraManager.delMadeira();
+                //madeiraManager.delMadeira();
                 soundManager.setSoundMovPlayer();
             }
 			break;
@@ -268,7 +266,8 @@ public class Player : GridObject {
     {
         if (target.gameObject.tag == "Madeira")
         {
-            madeiraManager.addMadeira();
+            //madeiraManager.addMadeira();
+            scoreText.GetComponent<ScoreText>().addOnMadeira();
             soundManager.setSoundColetaMadeira();
             target.GetComponent<Coin>().destroyCoin();
         }
@@ -440,16 +439,22 @@ public class Player : GridObject {
 
     public void setPowerUp(PowerUpType PUType)
     {
+        if (hasPowerUp)
+        {
+            if (blinked)
+            {
+                StopCoroutine(blink_corroutine);
+            }
+            GetComponent<SpriteRenderer>().color = Color.white;
+            myPS.SetActive(false);
+        }
         hasPowerUp = true;
-        if (!somJaTocou) soundManager.setSoundPegaPowerUp();
-        somJaTocou = true;
+        soundManager.setSoundPegaPowerUp();
         powerUpType = PUType;
         timeLeftPowerUp = timePowerUp;
-        if (blinked) StopCoroutine(blink_corroutine);
-        SpriteRenderer mySR = GetComponent<SpriteRenderer>();
-        mySR.color = Color.white;
     }
- 	private void ShowPowerUpSlider(){
+
+    private void ShowPowerUpSlider(){
          if(hasPowerUp == true){
              powerUpSlider.SetActive(true);
          }else{
@@ -475,7 +480,7 @@ public class Player : GridObject {
         blinked = true;
         SpriteRenderer mySR = GetComponent<SpriteRenderer>();
         for(int i = 0;i<4;i++){
-            mySR.color = new Color32(150, 255, 80, 255);
+            mySR.color = new Color32(120, 255, 120, 255);
             yield return new WaitForSeconds(0.2f);
             mySR.color = Color.white;
             yield return new WaitForSeconds(0.2f);
@@ -492,10 +497,15 @@ public class Player : GridObject {
             mySR.color = Color.white;
             yield return new WaitForSeconds(0.05f);
         }
+        fimPowerUp();
+    }
+
+    void fimPowerUp()
+    {
         hasPowerUp = false;
-        somJaTocou = false;
         timeLeftPowerUp = timePowerUp;
         myPS.SetActive(false);
         blinked = false;
+        GetComponent<SpriteRenderer>().color = Color.white;
     }
 }
