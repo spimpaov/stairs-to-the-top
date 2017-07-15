@@ -5,13 +5,16 @@ using UnityEngine.UI;
 
 public class MenuStructure : MonoBehaviour {
 
+    public Text highscoreText;
+
 	[SerializeField] private List<GameObject> menuList;
 	private int actualMenu = 0;
 	[SerializeField] private float transitionSpeed;
 	[SerializeField] private Background myBG;
 
 	private IEnumerator TransitionLeft(){
-		RectTransform menuRT = menuList[actualMenu].GetComponent<RectTransform>();
+        highscoreText.enabled = false;
+        RectTransform menuRT = menuList[actualMenu].GetComponent<RectTransform>();
 		Vector2 originalPosition = menuRT.anchoredPosition;
 		Vector2 targetPositionLeft = originalPosition - Vector2.right*1000;
 		Vector2 targetPositionRight = originalPosition + Vector2.right*1000;
@@ -49,9 +52,11 @@ public class MenuStructure : MonoBehaviour {
 			menuRT.anchoredPosition = Vector2.MoveTowards(menuRT.anchoredPosition,originalPosition,transitionSpeed);
 			yield return new WaitForEndOfFrame();
 		}
-		
-	}
-	private void ChangeMenu(int quant){
+        highscoreText.enabled = true;
+
+
+    }
+    private void ChangeMenu(int quant){
 		menuList[actualMenu].SetActive(false);
 
 		actualMenu += quant;

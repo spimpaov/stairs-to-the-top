@@ -1,10 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SoundManager : MonoBehaviour
 {
 
+    static float sfx_volume = 1;
+
+    public Slider sfx_slider;
     public AudioClip mov_player;
     public AudioClip coleta_mad;
     public AudioClip ativa_switch;
@@ -15,8 +19,18 @@ public class SoundManager : MonoBehaviour
 
     void Start()
     {
-        audioSource = GameObject.FindGameObjectWithTag("SoundManager").GetComponent<AudioSource>();
+        audioSource = this.gameObject.GetComponent<AudioSource>();
+        this.gameObject.GetComponent<AudioSource>().volume = sfx_volume;
+        if (sfx_slider != null) sfx_slider.value = sfx_volume;
     }
+
+    public void setSfxVolume()
+    {
+        sfx_volume = sfx_slider.value;
+        Debug.Log("sfx_volume: " + sfx_volume);
+        audioSource.volume = sfx_volume;
+    }
+
     public void setSoundMovPlayer()
     {
         audioSource.PlayOneShot(mov_player);
