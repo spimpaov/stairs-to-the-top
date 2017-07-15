@@ -16,7 +16,6 @@ public class PowerUp : MonoBehaviour {
     //private GameObject HUD;
     //private GameObject score;
     private GameObject player;
-	private GameObject text_sucesso;
     private PowerUpType type;
 
     [SerializeField] float speed,time;
@@ -29,7 +28,6 @@ public class PowerUp : MonoBehaviour {
         //HUD = GameObject.FindGameObjectWithTag("HUD");
         //score = GameObject.FindGameObjectWithTag("Score");
         player = GameObject.FindGameObjectWithTag("Player");
-		text_sucesso = GameObject.FindGameObjectWithTag ("TextoPOColetado");
 
         StartCoroutine( UpAndDown() );
         StartCoroutine( UpState() );

@@ -18,7 +18,6 @@ public class GenericPrefab : MonoBehaviour {
     private int capacidadeTile;
     private Vector3 pos;
     private float alturaTile;
-    private SpawnableObject curr_laser;
     private Vector3 curr_laser_pos;
     private SpawnableObject curr_toggle_switch;
 
@@ -56,7 +55,6 @@ public class GenericPrefab : MonoBehaviour {
                 switch (so)
                 {
                     case SpawnableObject.LASER:
-                        curr_laser = so;
                         curr_laser_pos = calculaPos(pos_linha, pos_coluna);
                         break;
                 }

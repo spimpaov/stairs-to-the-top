@@ -7,7 +7,6 @@ public class Spider : GridObject {
     private float timeBetweenMovements = 1.0f;
     private Player player;
     private GameObject arrow;
-    private Vector3 ray_dir;
     [SerializeField] private float arrowDistance;
     public bool atePlayer = false;
     public Spider spider;
@@ -66,25 +65,21 @@ public class Spider : GridObject {
 
         switch(dir){
             case Direction.LEFT_DOWN:
-                ray_dir = (Vector3.down + Vector3.left).normalized*3;
                 arrowSR.flipX = false;
                 arrowSR.flipY = false;
                 arrow.transform.localPosition = (Vector3.down+Vector3.left).normalized*arrowDistance;
                 break;
             case Direction.LEFT_UP:
-                ray_dir = (Vector3.up + Vector3.left).normalized*3;
                 arrowSR.flipX = false;
                 arrowSR.flipY = true;
                 arrow.transform.localPosition = (Vector3.up+Vector3.left).normalized*arrowDistance;
                 break;
             case Direction.RIGHT_DOWN:
-                ray_dir = (Vector3.down + Vector3.right).normalized*3;
                 arrowSR.flipX = true;
                 arrowSR.flipY = false;
                 arrow.transform.localPosition = (Vector3.down+Vector3.right).normalized*arrowDistance;
                 break;
             case Direction.RIGHT_UP:
-                ray_dir = (Vector3.up + Vector3.right).normalized*3;
                 arrowSR.flipX = true;
                 arrowSR.flipY = true;
                 arrow.transform.localPosition = (Vector3.up+Vector3.right).normalized*arrowDistance;

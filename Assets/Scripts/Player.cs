@@ -475,19 +475,19 @@ public class Player : GridObject {
         blinked = true;
         SpriteRenderer mySR = GetComponent<SpriteRenderer>();
         for(int i = 0;i<4;i++){
-            mySR.color = Color.green;
+            mySR.color = new Color32(150, 255, 80, 255);
             yield return new WaitForSeconds(0.2f);
             mySR.color = Color.white;
             yield return new WaitForSeconds(0.2f);
         }
         for(int i = 0;i<4;i++){
-            mySR.color = Color.yellow;
+            mySR.color = new Color32(255, 255, 75, 255);
             yield return new WaitForSeconds(0.1f);
             mySR.color = Color.white;
             yield return new WaitForSeconds(0.1f);
         }
         for(int i = 0;i<8;i++){
-            mySR.color = Color.red;
+            mySR.color = new Color32(255, 110, 110, 255); ;
             yield return new WaitForSeconds(0.05f);
             mySR.color = Color.white;
             yield return new WaitForSeconds(0.05f);

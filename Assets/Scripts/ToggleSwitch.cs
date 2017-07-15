@@ -5,8 +5,6 @@ using UnityEngine;
 public class ToggleSwitch : MonoBehaviour {
 
     public Laser laser;
-
-    [SerializeField] private bool activated = false;
     private Animator myAnimator;
 
     private void Start(){
@@ -15,10 +13,6 @@ public class ToggleSwitch : MonoBehaviour {
     public void activateToggleSwitch()
     {
         myAnimator.Play("switch_activate");
-        activated = true;
-        //Debug.Log("LASER: " + laser);
         laser.Desativar();
     }
-
-
 }

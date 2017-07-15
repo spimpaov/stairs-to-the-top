@@ -21,6 +21,7 @@ public class PauseManager : MonoBehaviour {
             player.pauseGame();
             pauseBg.GetComponent<Image>().enabled = true;
             pauseBg.transform.GetChild(0).GetComponent<Text>().enabled = true;
+            setMenuButton(true);
             Time.timeScale = 0;
         } else
         {
@@ -28,7 +29,16 @@ public class PauseManager : MonoBehaviour {
             player.resumeGame();
             pauseBg.GetComponent<Image>().enabled = false;
             pauseBg.transform.GetChild(0).GetComponent<Text>().enabled = false;
+            setMenuButton(false);
             Time.timeScale = 1;
         }
+    }
+
+    void setMenuButton(bool valor)
+    {
+        GameObject botao = GameObject.FindGameObjectWithTag("MenuButton");
+        botao.GetComponent<Image>().enabled = valor;
+        botao.GetComponent<Button>().enabled = valor;
+        botao.transform.GetChild(0).GetComponent<Image>().enabled = valor;
     }
 }
