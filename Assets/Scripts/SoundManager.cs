@@ -14,6 +14,7 @@ public class SoundManager : MonoBehaviour
     public AudioClip ativa_switch;
     public AudioClip morte_player;
     public AudioClip pega_powerup;
+    public AudioClip mata_bicho;
 
     private AudioSource audioSource;
 
@@ -50,5 +51,9 @@ public class SoundManager : MonoBehaviour
     public void setSoundPegaPowerUp()
     {
         audioSource.PlayOneShot(pega_powerup);
+    }
+    public void setSoundMataBicho()
+    {
+        audioSource.PlayOneShot(mata_bicho);
     }
 }

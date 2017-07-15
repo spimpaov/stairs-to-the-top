@@ -22,6 +22,7 @@ public class Player : GridObject {
 	public float alt_momento; //define a altura de um momento (único para todos os momentos)
     
     private bool paused = false;
+    private bool somJaTocou = false;
     private PowerUpType powerUpType;
     private Vector3 vetorDirecaoAtual = new Vector3(0,0,0);
 	private GameObject scoreText;
@@ -277,6 +278,7 @@ public class Player : GridObject {
             {
                 if (powerUpType == PowerUpType.MARTELO || powerUpType == PowerUpType.CHAVE)
                 {
+                    soundManager.setSoundMataBicho();
                     target.GetComponent<Saw>().destroySaw();
                     scoreText.GetComponent<ScoreText>().addOnPowerUp();
                     timeLeftPowerUp += timeFromSawDestroying;
@@ -317,6 +319,7 @@ public class Player : GridObject {
             {
                 if (powerUpType == PowerUpType.MARTELO || powerUpType == PowerUpType.INSETICIDA)
                 {
+                    soundManager.setSoundMataBicho();
                     target.GetComponent<Spider>().destroySpiderByPlayer(transform.position.x > target.transform.position.x);
                     scoreText.GetComponent<ScoreText>().addOnPowerUp();
                     timeLeftPowerUp += timeFromSpiderKilling;
@@ -437,9 +440,9 @@ public class Player : GridObject {
     public void setPowerUp(PowerUpType PUType)
     {
         hasPowerUp = true;
-        soundManager.setSoundPegaPowerUp();
+        if (!somJaTocou) soundManager.setSoundPegaPowerUp();
+        somJaTocou = true;
         powerUpType = PUType;
-        Debug.Log("PUType = " + powerUpType);
         timeLeftPowerUp = timePowerUp;
     }
  	private void ShowPowerUpSlider(){
@@ -485,7 +488,8 @@ public class Player : GridObject {
             mySR.color = Color.white;
             yield return new WaitForSeconds(0.05f);
         }
-        hasPowerUp = false; 
+        hasPowerUp = false;
+        somJaTocou = false;
         timeLeftPowerUp = timePowerUp;
         myPS.SetActive(false);
         blinked = false;
