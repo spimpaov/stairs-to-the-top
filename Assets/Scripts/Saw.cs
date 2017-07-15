@@ -12,6 +12,7 @@ public class Saw : MonoBehaviour {
     }
     public void destroySaw()
     {
+        GetComponent<Collider2D>().enabled = false;
         GameObject go;
         Destroy(this.gameObject);
         go = Instantiate(brokenSawPrefab,transform.position,Quaternion.identity);

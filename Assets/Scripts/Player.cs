@@ -20,7 +20,8 @@ public class Player : GridObject {
     public float timeLeftPowerUp;
 	public int num_momentos; //numero de momentos existentes
 	public float alt_momento; //define a altura de um momento (único para todos os momentos)
-    
+
+    private Coroutine blink_corroutine = null;
     private bool paused = false;
     private bool somJaTocou = false;
     private PowerUpType powerUpType;
@@ -444,6 +445,9 @@ public class Player : GridObject {
         somJaTocou = true;
         powerUpType = PUType;
         timeLeftPowerUp = timePowerUp;
+        if (blinked) StopCoroutine(blink_corroutine);
+        SpriteRenderer mySR = GetComponent<SpriteRenderer>();
+        mySR.color = Color.white;
     }
  	private void ShowPowerUpSlider(){
          if(hasPowerUp == true){
@@ -463,7 +467,7 @@ public class Player : GridObject {
         {
             timeLeftPowerUp -= Time.deltaTime;
             if(!blinked && timeLeftPowerUp < 3f){
-                StartCoroutine( BlinkWhenPowerUpEnding() );
+                blink_corroutine = StartCoroutine( BlinkWhenPowerUpEnding() );
             }
         }
     }

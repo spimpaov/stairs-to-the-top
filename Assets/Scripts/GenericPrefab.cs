@@ -103,10 +103,6 @@ public class GenericPrefab : MonoBehaviour {
 				switch (so) {
 				case SpawnableObject.NADA:
 					break;
-				case SpawnableObject.COIN:
-					pos = calculaPos (pos_linha, pos_coluna);
-					instantiateCoin (pos);
-					break;
 				case SpawnableObject.SAW:
 					pos = calculaPos (pos_linha, pos_coluna);
 					instantiateSaw (pos);
@@ -115,6 +111,10 @@ public class GenericPrefab : MonoBehaviour {
 					pos = calculaPos (pos_linha, pos_coluna);
 					instantiateSpider (pos);
 					break;
+                case SpawnableObject.COIN:
+                    pos = calculaPos(pos_linha, pos_coluna);
+                    instantiateCoin(pos);
+                    break;
                 case SpawnableObject.CUPIM:
                     pos = calculaPos(pos_linha, pos_coluna);
                     if (pos.x != 4) {

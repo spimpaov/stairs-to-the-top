@@ -7,12 +7,14 @@ public class Spider : GridObject {
     private float timeBetweenMovements = 1.0f;
     private Player player;
     private GameObject arrow;
+    private Vector3 ray_dir;
     [SerializeField] private float arrowDistance;
     public bool atePlayer = false;
+    public Spider spider;
 
 	void Start () {
         arrow = transform.GetChild(1).gameObject;
-        GetComponentInChildren<SpriteRenderer>().color = GetColor(Random.Range(1,5));
+        GetComponentInChildren<SpriteRenderer>().color = GetColor(Random.Range(1,6));
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         targetPOS = transform.position;
         StartCoroutine(randomBehaviour());
@@ -25,13 +27,15 @@ public class Spider : GridObject {
     private Color GetColor(int number){
         switch(number){
             case 1:
-                return Color.red;
+                return new Color32(175, 60, 60, 255);
             case 2:
-                return Color.green;
+                return new Color32(90, 180, 10, 255);
             case 3:
-                return Color.yellow;
+                return new Color32(230, 230, 85, 255);
             case 4:
-                return Color.blue;
+                return new Color32(100, 200, 250, 255);
+            case 5:
+                return new Color32(240, 130, 250, 255);
             default:
                 return Color.white;
         }
@@ -48,26 +52,39 @@ public class Spider : GridObject {
             move(dir);
         }
     }
+/*
+    void raycast()
+    {
+        Vector3 sightStart = this.transform.position;
+        Vector3 sightEnd = sightStart + ray_dir;
+
+        Debug.DrawLine(sightStart, sightEnd, Color.cyan);
+    }
+*/
     void ChangeArrowDirection(Direction dir){
         SpriteRenderer arrowSR = arrow.GetComponent<SpriteRenderer>();
 
         switch(dir){
             case Direction.LEFT_DOWN:
+                ray_dir = (Vector3.down + Vector3.left).normalized*3;
                 arrowSR.flipX = false;
                 arrowSR.flipY = false;
                 arrow.transform.localPosition = (Vector3.down+Vector3.left).normalized*arrowDistance;
                 break;
             case Direction.LEFT_UP:
+                ray_dir = (Vector3.up + Vector3.left).normalized*3;
                 arrowSR.flipX = false;
                 arrowSR.flipY = true;
                 arrow.transform.localPosition = (Vector3.up+Vector3.left).normalized*arrowDistance;
                 break;
             case Direction.RIGHT_DOWN:
+                ray_dir = (Vector3.down + Vector3.right).normalized*3;
                 arrowSR.flipX = true;
                 arrowSR.flipY = false;
                 arrow.transform.localPosition = (Vector3.down+Vector3.right).normalized*arrowDistance;
                 break;
             case Direction.RIGHT_UP:
+                ray_dir = (Vector3.up + Vector3.right).normalized*3;
                 arrowSR.flipX = true;
                 arrowSR.flipY = true;
                 arrow.transform.localPosition = (Vector3.up+Vector3.right).normalized*arrowDistance;
@@ -95,7 +112,10 @@ public class Spider : GridObject {
 
     void OnTriggerEnter2D(Collider2D target)
     {
-        if(target.gameObject.tag == "Saw") { destroySpider(); }
+        //if(target.gameObject.tag == "Saw") { destroySpiderByPlayer(true); } //chuva de aranha morta
+        if (target.gameObject.tag == "Water") { destroySpiderByPlayer(true); }; //agua esta sempre abaixo do player, nao cai aranha do ceu assim
+        //if (target.gameObject.tag == "Laser") { destroySpiderByPlayer(true); };
+
     }
 
     public void destroySpider()
@@ -104,6 +124,7 @@ public class Spider : GridObject {
     }
     public void destroySpiderByPlayer(bool right)
     {
+        GetComponent<Collider2D>().enabled = false;
         GetComponent<Rigidbody2D>().gravityScale = 5;
         if(!right){
             GetComponent<Rigidbody2D>().AddForce(Vector3.up*600f+Vector3.right*200f);
@@ -120,7 +141,6 @@ public class Spider : GridObject {
     public void SpiderAtePlayer()
     {
         atePlayer = true;
-        Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         StopCoroutine(randomBehaviour());
         GetComponentInChildren<Animator>().Play("spider-eating");
     }
