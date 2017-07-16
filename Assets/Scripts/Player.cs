@@ -20,9 +20,9 @@ public class Player : GridObject {
     public float timeLeftPowerUp;
 	public int num_momentos; //numero de momentos existentes
 	public float alt_momento; //define a altura de um momento (único para todos os momentos)
+    public bool paused = false;
 
     private Coroutine blink_corroutine = null;
-    private bool paused = false;
     private PowerUpType powerUpType;
     private Vector3 vetorDirecaoAtual = new Vector3(0,0,0);
 	private GameObject scoreText;
@@ -75,7 +75,7 @@ public class Player : GridObject {
 
 
     void Update(){
-
+        
         if (!paused && !playerJaTaDed)
         {
             if (!moved && transform.position != initPos)

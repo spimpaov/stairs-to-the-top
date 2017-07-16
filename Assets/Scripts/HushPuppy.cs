@@ -4,17 +4,11 @@ using System.Collections;
 
 public class HushPuppy : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
     public void LoadScene(string sceneName){
+        GameObject pm = GameObject.FindGameObjectWithTag("PauseManager");
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (pm != null) pm.GetComponent<PauseManager>().pressionado = false;
+        if (player != null) player.GetComponent<Player>().paused = false;
         SceneManager.LoadScene(sceneName);
     }
 	public void LoadSceneWithBiggerTransition(string name){
@@ -23,7 +17,6 @@ public class HushPuppy : MonoBehaviour {
 	private IEnumerator BiggerTransition(){
 		GameObject.Find("Transition_Mask").GetComponent<TransitionMask>().Bigger_transition();
 		yield return new WaitForSeconds(1);
-		Debug.Log("OIIIII");
 		SceneManager.LoadScene(name);
 	}
 }
